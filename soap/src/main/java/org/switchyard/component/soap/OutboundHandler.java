@@ -48,6 +48,8 @@ import org.switchyard.component.soap.util.WSDLUtil;
 
 /**
  * Handles invoking external Webservice endpoints.
+ *
+ * @author Magesh Kumar B <mageshbk@jboss.com> (C) 2011 Red Hat Inc.
  */
 public class OutboundHandler extends BaseHandler {
 
@@ -121,8 +123,7 @@ public class OutboundHandler extends BaseHandler {
                 exchange.send(message);
             }
         } catch (SOAPException se) {
-            // generate fault
-            LOGGER.error(se);
+            throw new HandlerException("Unexpected exception handling SOAP Message", se);
         }
     }
 
