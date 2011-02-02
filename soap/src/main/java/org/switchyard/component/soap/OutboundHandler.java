@@ -26,7 +26,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
-import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.WSDLException;
 import javax.xml.namespace.QName;
@@ -59,6 +58,7 @@ public class OutboundHandler extends BaseHandler {
     private Dispatch<SOAPMessage> _dispatcher;
     private Port _port;
     private String _wsdlLocation;
+    private String _servicePort;
 
     /**
      * Constructor.
@@ -67,6 +67,7 @@ public class OutboundHandler extends BaseHandler {
     public OutboundHandler(final HashMap<String, String> config) {
         String composer = config.get("composer");
         String decomposer = config.get("decomposer");
+        _servicePort = config.get("wsPort");
 
         if (composer != null && composer.length() > 0) {
             try {
@@ -136,11 +137,10 @@ public class OutboundHandler extends BaseHandler {
     private SOAPMessage invokeService(final SOAPMessage soapMessage) throws SOAPException {
         if (_dispatcher == null) {
             try {
-                Definition definition = WSDLUtil.readWSDL(_wsdlLocation);
-                javax.wsdl.Service wsdlService = (javax.wsdl.Service) definition.getServices().values().iterator().next();
+                javax.wsdl.Service wsdlService = WSDLUtil.getService(_wsdlLocation, _servicePort);
                 QName serviceName = wsdlService.getQName();
-                _port = (Port) wsdlService.getPorts().values().iterator().next();
-                QName portName = new QName(definition.getTargetNamespace(), _port.getName());
+                _port = WSDLUtil.getPort(wsdlService, _servicePort);
+                QName portName = new QName(serviceName.getNamespaceURI(), _port.getName());
 
                 URL wsdlUrl = new URL(_wsdlLocation);
                 Service service = Service.create(wsdlUrl, serviceName);

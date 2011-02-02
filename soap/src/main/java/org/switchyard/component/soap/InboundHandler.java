@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.WSDLException;
 import javax.xml.namespace.QName;
@@ -84,6 +83,7 @@ public class InboundHandler extends BaseHandler {
     private int _serverPort;
     private String _contextPath;
     private HttpServer _server;
+    private String _servicePort;
 
     /**
      * Constructor.
@@ -96,6 +96,7 @@ public class InboundHandler extends BaseHandler {
         String decomposer = config.get("decomposer");
         _host = config.get("host");
         _contextPath = config.get("context");
+        _servicePort = config.get("wsPort");
 
         if (composer != null && composer.length() > 0) {
             try {
@@ -139,13 +140,10 @@ public class InboundHandler extends BaseHandler {
      */
     public void start() throws WebServicePublishException {
         try {
-            Definition definition = WSDLUtil.readWSDL(_wsdlLocation);
-            // Only first definition for now
-            javax.wsdl.Service wsdlService = (javax.wsdl.Service) definition.getServices().values().iterator().next();
-            String targetNamespace = definition.getTargetNamespace();
+            javax.wsdl.Service wsdlService = WSDLUtil.getService(_wsdlLocation, _servicePort);
+            String targetNamespace = wsdlService.getQName().getNamespaceURI();
             _wsName = wsdlService.getQName().getLocalPart();
-            // Only first port for now
-            _wsdlPort = (Port) wsdlService.getPorts().values().iterator().next();
+            _wsdlPort = WSDLUtil.getPort(wsdlService, _servicePort);
             String portName = _wsdlPort.getName();
             BaseWebService wsProvider = new BaseWebService();
             // Hook the handler
@@ -164,7 +162,7 @@ public class InboundHandler extends BaseHandler {
             metadata.add(source);
             _endpoint.setMetadata(metadata);
             Map<String, Object> properties = new HashMap<String, Object>();
-            properties.put(Endpoint.WSDL_SERVICE, new QName(targetNamespace, _wsName));
+            properties.put(Endpoint.WSDL_SERVICE, wsdlService.getQName());
             properties.put(Endpoint.WSDL_PORT, new QName(targetNamespace, portName));
             _endpoint.setProperties(properties);
 

@@ -44,6 +44,7 @@ public class DefaultMessageComposer implements MessageComposer {
     /**
      * Create a Message from the given SOAP message.
      * @param soapMessage the SOAP message to be converted
+     * @param exchange the Exchange.
      * @return a Message
      * @throws SOAPException If the SOAP message is not correct.
      */
