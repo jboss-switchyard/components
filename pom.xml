@@ -54,6 +54,8 @@
     <modules>
         <module>bean</module>
         <module>soap</module>
+        <module>torquebox/as6-int</module>
+        <module>torquebox/gem</module>
         <module>tests</module>
         <module>camel</module>
         <module>tools/forge/bean</module>
