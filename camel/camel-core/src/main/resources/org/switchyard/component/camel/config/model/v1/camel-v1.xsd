@@ -129,6 +129,20 @@ MA  02110-1301, USA.
         </complexContent>
     </complexType>
     
+    <element name="binding.bean" type="camel:CamelBeanBindingType" substitutionGroup="sca:binding"/>
+    <complexType name="CamelBeanBindingType" >
+        <complexContent>
+            <extension base="sca:Binding">
+                <sequence>
+                    <element name="beanID" type="string"/>
+                    <element name="method" type="string"/>
+                    <element name="cache" type="boolean"/>
+                    <element name="multiParameterArray" type="boolean"/>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+    
     <complexType name="CamelOperationSelectorType">
       <complexContent>
          <extension base="sca:OperationSelectorType">
