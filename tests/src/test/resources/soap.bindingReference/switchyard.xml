@@ -25,7 +25,7 @@ MA  02110-1301, USA.
             xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
             targetNamespace="urn:switchyard-quickstarts:bindingReference:1.0-SNAPSHOT"
             name="bindingReference">
-    <sca:composite name="bindingReference" targetNamespace="urn:m1app:example:1.0">
+    <sca:composite name="bindingReference">
         <sca:reference name="DummySOAPServiceService">
             <soap:binding.soap>
                 <soap:wsdl>soap.bindingReference/dummyService.wsdl</soap:wsdl>
