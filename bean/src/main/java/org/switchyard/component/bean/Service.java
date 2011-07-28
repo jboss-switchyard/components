@@ -48,6 +48,11 @@ public @interface Service {
     String name() default EMPTY;
     
     /**
+     * Optional Service namespace.
+     */
+    String namespace() default EMPTY;
+    
+    /**
      * Constant representing a null (i.e. unassigned) value.
      * Annotations are not allowed to have empty values, so a default
      * representation for an empty value is used.

@@ -64,7 +64,7 @@ public final class ComponentNameComposer {
     public static QName componseSwitchYardServiceName(final String uri) {
         final URI create = URI.create(uri);
         final String path = create.getAuthority();
-        return new QName(path);
+        return QName.valueOf(path);
     }
     
 }

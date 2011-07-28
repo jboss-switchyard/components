@@ -16,22 +16,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
  * MA  02110-1301, USA.
  */
-
 package org.switchyard.component.bean.deploy;
 
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.xml.namespace.QName;
+
 import org.switchyard.ExchangeHandler;
+import org.switchyard.common.lang.Strings;
+import org.switchyard.common.xml.XMLHelper;
 import org.switchyard.component.bean.BeanServiceMetadata;
 import org.switchyard.component.bean.Service;
 import org.switchyard.component.bean.ServiceProxyHandler;
 import org.switchyard.exception.SwitchYardException;
-
 import org.switchyard.metadata.ServiceInterface;
 import org.switchyard.metadata.java.JavaService;
-
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.xml.namespace.QName;
 
 /**
  * SwitchYard CDI bean Service Descriptor.
@@ -51,11 +50,10 @@ public class CDIBeanServiceDescriptor implements ServiceDescriptor {
      * @param beanDeploymentMetaData bean deployment info
      */
     public CDIBeanServiceDescriptor(CDIBean cdiBean, BeanDeploymentMetaData beanDeploymentMetaData) {
-        Class<?> serviceInterface = getServiceInterface(cdiBean.getBean());
-
         this._cdiBean = cdiBean;
-        this._serviceName = new QName(serviceInterface.getSimpleName());
-        this._serviceMetadata = new BeanServiceMetadata(serviceInterface);
+        Class<?> beanClass = cdiBean.getBean().getBeanClass();
+        this._serviceName = getServiceName(beanClass);
+        this._serviceMetadata = new BeanServiceMetadata(getServiceInterface(beanClass));
         this._beanDeploymentMetaData = beanDeploymentMetaData;
     }
 
@@ -101,8 +99,19 @@ public class CDIBeanServiceDescriptor implements ServiceDescriptor {
         return JavaService.fromClass(_serviceMetadata.getServiceClass());
     }
 
-    private Class<?> getServiceInterface(Bean bean) {
-        return getServiceInterface(bean.getBeanClass());
+    /**
+     * Get the service name defined by a service bean class.
+     * @param beanClass The bean class.
+     * @return The Service name.
+     */
+    protected static QName getServiceName(Class<?> beanClass) {
+        Service service = beanClass.getAnnotation(Service.class);
+        String namespace = service.namespace();
+        String localName = Strings.trimToNull(service.name());
+        if (localName == null) {
+            localName = getServiceInterface(beanClass).getSimpleName();
+        }
+        return XMLHelper.createQName(namespace, localName);
     }
 
     /**
