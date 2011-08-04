@@ -22,13 +22,12 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.0" name="org.springframework.beans" slot="${version.spring}">
+<module xmlns="urn:jboss:module:1.0" name="org.antlr.antlr-runtime">
 
     <resources>
-        <resource-root path="spring-beans-${version.spring}.jar"/>
+        <resource-root path="antlr-runtime-${antlr-runtime.version}.jar"/>
     </resources>
 
     <dependencies>
-        <module name="org.springframework.core" slot="${version.spring}"/>
     </dependencies>
 </module>

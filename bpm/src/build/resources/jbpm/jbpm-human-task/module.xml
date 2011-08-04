@@ -22,16 +22,15 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.0" name="org.apache.camel.spring" slot="${version.camel}">
+<module xmlns="urn:jboss:module:1.0" name="org.jbpm.jbpm-human-task">
 
     <resources>
-        <resource-root path="camel-spring-${version.camel}.jar"/>
+        <resource-root path="jbpm-human-task-${jbpm.version}.jar"/>
     </resources>
 
     <dependencies>
-        <module name="org.apache.camel.core"/>
-        <module name="org.apache.commons.logging"/>
-        <module name="javax.jms.api"/>
-        <module name="org.springframework" export="false"/>
+        <module name="org.apache.mina.mina-core"/>
+        <module name="org.drools.knowledge-api"/>
+        <module name="org.jbpm.jbpm-workitems"/>
     </dependencies>
 </module>

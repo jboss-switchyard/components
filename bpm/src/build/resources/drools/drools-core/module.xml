@@ -22,14 +22,16 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<module xmlns="urn:jboss:module:1.0" name="org.springframework.tx" slot="${version.spring}">
+<module xmlns="urn:jboss:module:1.0" name="org.drools.drools-core">
 
     <resources>
-        <resource-root path="spring-tx-${version.spring}.jar"/>
+        <resource-root path="drools-core-${drools.version}.jar"/>
     </resources>
 
     <dependencies>
-        <module name="org.springframework.core" slot="${version.spring}"/>
-        <module name="org.apache.commons.logging"/>
+        <module name="javax.api"/>
+        <module name="org.mvel2"/>
+        <module name="org.drools.knowledge-api"/>
+        <module name="org.jbpm.jbpm-flow"/>
     </dependencies>
 </module>
