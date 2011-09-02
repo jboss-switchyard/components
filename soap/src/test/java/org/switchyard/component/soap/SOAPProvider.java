@@ -36,7 +36,17 @@ import org.w3c.dom.Node;
  * @author Magesh Kumar B <mageshbk@jboss.com> (C) 2011 Red Hat Inc.
  */
 public class SOAPProvider extends BaseHandler {
+	private String defaultFaultResponse = "<soap:fault xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"
+                                   + "   <faultcode>soap:Server.AppError</faultcode>"
+                                   + "   <faultstring>Invalid name</faultstring>"
+                                   + "   <detail>"
+                                   + "      <message>Looks like you did not specify a name!</message>"
+                                   + "      <errorcode>1000</errorcode>"
+                                   + "   </detail>"
+                                   + "</soap:fault>";
 
+	private String alternativeFaultResponse = null;
+	
     @Override
     public void handleMessage(Exchange exchange) throws HandlerException {
         if (exchange.getContract().getServiceOperation().getExchangePattern().equals(ExchangePattern.IN_OUT)) {
@@ -50,15 +60,9 @@ public class SOAPProvider extends BaseHandler {
             String response = null;
             if (toWhom.length() == 0) {
                 message = exchange.createMessage();
-                response = "<soap:fault xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"
-                            + "   <faultcode>soap:Server.AppError</faultcode>"
-                            + "   <faultstring>Invalid name</faultstring>"
-                            + "   <detail>"
-                            + "      <message>Looks like you did not specify a name!</message>"
-                            + "      <errorcode>1000</errorcode>"
-                            + "   </detail>"
-                            + "</soap:fault>";
-                setContent(message, response);
+                String faultResponse = alternativeFaultResponse != null ? alternativeFaultResponse : defaultFaultResponse;
+                alternativeFaultResponse = null;
+                setContent(message, faultResponse);
                 exchange.sendFault(message);
             } else {
                 message = exchange.createMessage();
@@ -69,6 +73,13 @@ public class SOAPProvider extends BaseHandler {
                 exchange.send(message);
             }
         }
+    }
+
+    /**
+     * @param res alternative message for fault response which is used only once
+     */
+    public void setAlternativeFaultResponse(final String res) {
+    	this.alternativeFaultResponse = res;
     }
 
     private void setContent(Message message, String response) {

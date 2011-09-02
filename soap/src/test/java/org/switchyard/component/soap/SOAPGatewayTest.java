@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -84,6 +85,7 @@ public class SOAPGatewayTest {
     @org.switchyard.test.ServiceOperation("webservice-consumer-classpath-wsdl")
     private Invoker consumerCPWsdl;
 
+    private SOAPProvider soapProvider;
     private SOAPBindingModel _config;
     private static URL _serviceURL;
     private SOAPGateway _soapInbound;
@@ -141,7 +143,7 @@ public class SOAPGatewayTest {
         _puller = new ModelPuller<CompositeModel>();
         
         // Provide a switchyard service
-        SOAPProvider provider = new SOAPProvider();
+        soapProvider = new SOAPProvider();
 
         CompositeModel composite = _puller.pull("/HelloSwitchYard.xml", getClass());
         composite.assertModelValid();
@@ -149,7 +151,7 @@ public class SOAPGatewayTest {
         CompositeServiceModel compositeService = composite.getServices().get(0);
         _config = (SOAPBindingModel)compositeService.getBindings().get(0);
 
-        _domain.registerService(_config.getServiceName(), provider, new HelloWebServiceInterface());
+        _domain.registerService(_config.getServiceName(), soapProvider, new HelloWebServiceInterface());
 
         String host = System.getProperty("org.switchyard.test.soap.host", "localhost");
         String port = System.getProperty("org.switchyard.test.soap.port", "48080");
@@ -265,7 +267,7 @@ public class SOAPGatewayTest {
     }
 
     @Test
-    public void invokeRequestResponseFault() throws Exception {
+    public void invokeRequestResponseSOAPFault() throws Exception {
         String input = "<test:sayHello xmlns:test=\"urn:switchyard-component-soap:test-ws:1.0\">"
                      + "   <arg0></arg0>"
                      + "</test:sayHello>";
@@ -279,6 +281,29 @@ public class SOAPGatewayTest {
                         + "   </detail>"
                         + "</soap:Fault>";
 
+        Message responseMsg = consumerService.sendInOut(input);
+        String response = toString(responseMsg.getContent(Node.class));
+        XMLAssert.assertXMLEqual(output, response);
+    }
+
+    @Test
+    public void invokeRequestResponseCustomFault() throws Exception {
+        String input = "<test:sayHello xmlns:test=\"urn:switchyard-component-soap:test-ws:1.0\">"
+                     + "   <arg0></arg0>"
+                     + "</test:sayHello>";
+
+        String faultString =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+        		                + "<CustomFaultMessage>"
+        		                + "errorcode=1000;"
+                              + "Invalid name: Looks like you did not specify a name!"
+           	                + "</CustomFaultMessage>";
+        
+        String output = "<SOAP-ENV:Fault xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">"
+                        + "   <faultcode>SOAP-ENV:Server</faultcode>"
+                        + "   <faultstring>" + URLEncoder.encode(faultString, "UTF-8") + "</faultstring>"
+                        + "</SOAP-ENV:Fault>";
+
+        soapProvider.setAlternativeFaultResponse(faultString);
         Message responseMsg = consumerService.sendInOut(input);
         String response = toString(responseMsg.getContent(Node.class));
         XMLAssert.assertXMLEqual(output, response);

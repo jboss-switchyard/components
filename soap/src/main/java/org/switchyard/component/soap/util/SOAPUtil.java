@@ -22,6 +22,7 @@ package org.switchyard.component.soap.util;
 import java.io.ByteArrayInputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URLEncoder;
 import java.util.Iterator;
 
 import javax.xml.namespace.QName;
@@ -38,6 +39,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.apache.log4j.Logger;
+import org.switchyard.Message;
 import org.switchyard.common.xml.XMLHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -124,6 +126,38 @@ public final class SOAPUtil {
             }
         }
         return faultMsg;
+    }
+
+    /**
+     * Generates a SOAP Fault Message with fault message. 
+     * @param faultMessage fault message  
+     * @return The SOAP Message containing the Fault.
+     * @throws SOAPException If the message could not be generated.
+     */
+    public static SOAPMessage generateFault(final Message faultMessage) throws SOAPException {
+        final SOAPMessage soapFaultMsg = SOAP_MESSAGE_FACTORY.createMessage();
+        Node faultContent = faultMessage.getContent(Node.class);
+        if (faultContent == null) {
+           soapFaultMsg.getSOAPBody().addFault(SERVER_FAULT_QN, null);
+        } else {
+           String name = XMLHelper.nameOf(faultContent);
+           if (name != null && name.equalsIgnoreCase("fault")) {
+              Node node = soapFaultMsg.getSOAPBody().getOwnerDocument().importNode(faultContent, true);
+              soapFaultMsg.getSOAPBody().appendChild(node);
+           } else {
+              // content of faultMessage is something other than SOAP:Fault.
+              // Put into faultString with URL encoded
+              String faultString = null;
+              try {
+                  faultString = URLEncoder.encode(XMLHelper.toString(faultContent), "UTF-8");
+              } catch (final Exception e) {
+                  LOGGER.warn("Could not parse Content of fault message",e);
+                  faultString = faultContent.toString();
+              }
+              soapFaultMsg.getSOAPBody().addFault(SERVER_FAULT_QN, faultString);
+           }
+        }
+        return soapFaultMsg;
     }
 
     /**
