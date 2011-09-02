@@ -41,6 +41,7 @@ import javax.xml.ws.Endpoint;
 import org.apache.log4j.Logger;
 import org.switchyard.BaseHandler;
 import org.switchyard.Exchange;
+import org.switchyard.ExchangeState;
 import org.switchyard.HandlerException;
 import org.switchyard.Message;
 import org.switchyard.Scope;
@@ -257,6 +258,9 @@ public class InboundHandler extends BaseHandler {
                 exchange.send(message);
                 try {
                     exchange = inOutHandler.waitForOut(_waitTimeout);
+                    if (exchange.getState() == ExchangeState.FAULT) {
+                        return SOAPUtil.generateFault(exchange.getMessage());
+                       }
                 } catch (DeliveryException e) {
                     return handleException(oneWay, new SOAPException("Timed out after " + _waitTimeout + " ms waiting on synchronous response from target service '" + _service.getName() + "'."));
                 }

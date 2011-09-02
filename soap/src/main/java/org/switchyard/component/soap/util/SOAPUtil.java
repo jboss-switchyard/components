@@ -38,6 +38,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.apache.log4j.Logger;
+import org.switchyard.Message;
 import org.switchyard.common.xml.XMLHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -124,6 +125,19 @@ public final class SOAPUtil {
             }
         }
         return faultMsg;
+    }
+
+    /**
+     * Generates a SOAP Fault Message with fault message. 
+     * @param faultMessage fault message  
+     * @return The SOAP Message containing the Fault.
+     * @throws SOAPException If the message could not be generated.
+     */
+    public static SOAPMessage generateFault(final Message faultMessage) throws SOAPException {
+        final SOAPMessage soapFaultMsg = SOAP_MESSAGE_FACTORY.createMessage();
+        faultMessage.getContent(Node.class);
+        soapFaultMsg.getSOAPBody().addFault(SERVER_FAULT_QN, faultMessage.getContent(String.class));
+        return soapFaultMsg;
     }
 
     /**
