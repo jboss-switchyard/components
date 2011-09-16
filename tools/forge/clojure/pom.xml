@@ -14,6 +14,9 @@
     <version>${project.parent.version}</version>
     <description>Clojure Component Forge Support</description>
     <url>http://switchyard.org/</url>
+  <properties>
+    <switchyard.version>${project.parent.version}</switchyard.version>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.jboss.forge</groupId>
@@ -45,6 +48,64 @@
         <version>1.8.5</version>
         <scope>test</scope>
      </dependency>
+     <dependency>
+      <groupId>org.jboss.forge</groupId>
+      <artifactId>forge-test-harness</artifactId>
+      <version>${forge.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.forge</groupId>
+      <artifactId>forge-shell</artifactId>
+      <version>${forge.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+      <artifactId>shrinkwrap-descriptors-impl</artifactId>
+      <version>1.0.0-beta-1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap</groupId>
+      <artifactId>shrinkwrap-impl-base</artifactId>
+      <version>1.0.0-alpha-11</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+      <artifactId>shrinkwrap-descriptors-api</artifactId>
+      <version>1.0.0-beta-1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.shrinkwrap</groupId>
+      <artifactId>shrinkwrap-api</artifactId>
+      <version>1.0.0-alpha-11</version>
+    </dependency>
+    <dependency>
+      <groupId>org.switchyard</groupId>
+      <artifactId>switchyard-api</artifactId>
+      <version>${switchyard.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.switchyard</groupId>
+      <artifactId>switchyard-plugin</artifactId>
+      <version>${switchyard.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.7.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>easymock</groupId>
+    	<artifactId>easymock</artifactId>
+    	<version>2.0</version>
+    	<scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>jmock</groupId>
+    	<artifactId>jmock</artifactId>
+    	<version>1.2.0</version>
+    	<scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
