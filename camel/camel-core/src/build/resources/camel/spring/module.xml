@@ -29,9 +29,9 @@
     </resources>
 
     <dependencies>
-        <module name="org.apache.camel.core"/>
+        <module name="org.apache.camel.core" slot="${version.camel}"/>
         <module name="org.apache.commons.logging"/>
         <module name="javax.jms.api"/>
-        <module name="org.springframework" export="false"/>
+        <module name="org.springframework" export="true" slot="${version.spring}"/>
     </dependencies>
 </module>
