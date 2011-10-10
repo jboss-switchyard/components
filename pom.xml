@@ -100,7 +100,7 @@
         </snapshots>
       </repository>
     </repositories>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.switchyard</groupId>
