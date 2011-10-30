@@ -35,7 +35,6 @@ import org.switchyard.common.io.pull.StringPuller;
 import org.switchyard.common.io.resource.Resource;
 import org.switchyard.common.io.resource.ResourceType;
 import org.switchyard.common.type.Classes;
-import org.switchyard.component.rules.common.RulesAuditType;
 import org.switchyard.config.model.ModelPuller;
 import org.switchyard.config.model.Scanner;
 import org.switchyard.config.model.ScannerInput;
@@ -45,6 +44,8 @@ import org.switchyard.config.model.composite.ComponentModel;
 import org.switchyard.config.model.composite.CompositeModel;
 import org.switchyard.config.model.resource.ResourceModel;
 import org.switchyard.config.model.switchyard.SwitchYardModel;
+import org.switchyard.integration.rules.audit.AuditType;
+import org.switchyard.integration.rules.config.model.AuditModel;
 
 /**
  * Tests Rules models.
@@ -79,11 +80,11 @@ public class RulesModelTests {
         Resource dslr = resource_iter.next();
         Assert.assertEquals("bar.dslr", dslr.getLocation());
         Assert.assertSame(ResourceType.valueOf("DSLR"), dslr.getType());
-        RulesAuditModel ram = rci.getRulesAudit();
+        AuditModel ram = rci.getAudit();
         Assert.assertNotNull(ram);
         Assert.assertEquals(Integer.valueOf(2000), ram.getInterval());
         Assert.assertEquals("foobar", ram.getLog());
-        Assert.assertEquals(RulesAuditType.CONSOLE, ram.getType());
+        Assert.assertEquals(AuditType.CONSOLE, ram.getType());
     }
 
     @Test
