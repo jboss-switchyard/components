@@ -51,6 +51,9 @@ import org.switchyard.config.model.composite.v1.V1JavaComponentServiceInterfaceM
 import org.switchyard.config.model.resource.v1.V1ResourceModel;
 import org.switchyard.config.model.switchyard.SwitchYardModel;
 import org.switchyard.config.model.switchyard.v1.V1SwitchYardModel;
+import org.switchyard.integration.rules.Audit;
+import org.switchyard.integration.rules.config.model.AuditModel;
+import org.switchyard.integration.rules.config.model.v1.V1AuditModel;
 import org.switchyard.metadata.ServiceOperation;
 import org.switchyard.metadata.java.JavaService;
 
@@ -113,6 +116,7 @@ public class BPMSwitchYardScanner implements Scanner<SwitchYardModel> {
                 processId = processName;
             }
             bciModel.setProcessId(processId);
+            bciModel.setAgent(process.agent());
             String messageContentInName = process.messageContentInName();
             if (!Process.UNDEFINED_MESSAGE_CONTENT_NAME.equals(messageContentInName)) {
                 bciModel.setMessageContentInName(messageContentInName);
@@ -152,6 +156,17 @@ public class BPMSwitchYardScanner implements Scanner<SwitchYardModel> {
                         bciModel.addProcessAction(pam);
                     }
                 }
+            }
+            Audit audit = processClass.getAnnotation(Audit.class);
+            if (audit != null) {
+                AuditModel aModel = new V1AuditModel(bciModel.getModelConfiguration().getQName().getNamespaceURI());
+                int interval = audit.interval();
+                if (interval != -1) {
+                    aModel.setInterval(Integer.valueOf(interval));
+                }
+                aModel.setLog(audit.log());
+                aModel.setType(audit.type());
+                bciModel.setAudit(aModel);
             }
             bciModel.addTaskHandler(new V1TaskHandlerModel().setClazz(SwitchYardServiceTaskHandler.class).setName(SwitchYardServiceTaskHandler.SWITCHYARD_SERVICE));
             for (Class<? extends TaskHandler> taskHandlerClass : process.taskHandlers()) {

@@ -25,12 +25,12 @@ import java.util.Collections;
 import java.util.List;
 
 import org.switchyard.component.rules.config.model.RulesActionModel;
-import org.switchyard.component.rules.config.model.RulesAuditModel;
 import org.switchyard.component.rules.config.model.RulesComponentImplementationModel;
 import org.switchyard.config.Configuration;
 import org.switchyard.config.model.Descriptor;
 import org.switchyard.config.model.composite.v1.V1ComponentImplementationModel;
 import org.switchyard.config.model.resource.ResourceModel;
+import org.switchyard.integration.rules.config.model.AuditModel;
 
 /**
  * A "rules" implementation of a ComponentImplementationModel.
@@ -40,7 +40,7 @@ import org.switchyard.config.model.resource.ResourceModel;
 public class V1RulesComponentImplementationModel extends V1ComponentImplementationModel implements RulesComponentImplementationModel {
 
     private List<RulesActionModel> _rulesActions = new ArrayList<RulesActionModel>();
-    private RulesAuditModel _rulesAudit;
+    private AuditModel _audit;
     private List<ResourceModel> _resources = new ArrayList<ResourceModel>();
 
     /**
@@ -48,7 +48,7 @@ public class V1RulesComponentImplementationModel extends V1ComponentImplementati
      */
     public V1RulesComponentImplementationModel() {
         super(RULES, DEFAULT_NAMESPACE);
-        setModelChildrenOrder(RulesActionModel.RULES_ACTION, RulesAuditModel.RULES_AUDIT, ResourceModel.RESOURCE);
+        setModelChildrenOrder(RulesActionModel.ACTION, AuditModel.AUDIT, ResourceModel.RESOURCE);
     }
 
     /**
@@ -59,7 +59,7 @@ public class V1RulesComponentImplementationModel extends V1ComponentImplementati
      */
     public V1RulesComponentImplementationModel(Configuration config, Descriptor desc) {
         super(config, desc);
-        for (Configuration rulesAction_config : config.getChildren(RulesActionModel.RULES_ACTION)) {
+        for (Configuration rulesAction_config : config.getChildren(RulesActionModel.ACTION)) {
             RulesActionModel rulesAction = (RulesActionModel)readModel(rulesAction_config);
             if (rulesAction != null) {
                 _rulesActions.add(rulesAction);
@@ -71,7 +71,7 @@ public class V1RulesComponentImplementationModel extends V1ComponentImplementati
                 _resources.add(resource);
             }
         }
-        setModelChildrenOrder(RulesActionModel.RULES_ACTION, RulesAuditModel.RULES_AUDIT, ResourceModel.RESOURCE);
+        setModelChildrenOrder(RulesActionModel.ACTION, AuditModel.AUDIT, ResourceModel.RESOURCE);
     }
 
     /**
@@ -89,6 +89,24 @@ public class V1RulesComponentImplementationModel extends V1ComponentImplementati
     @Override
     public RulesComponentImplementationModel setStateful(boolean stateful) {
         setModelAttribute("stateful", String.valueOf(stateful));
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isAgent() {
+        String agent = getModelAttribute("agent");
+        return agent != null ? Boolean.valueOf(agent) : false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public RulesComponentImplementationModel setAgent(boolean agent) {
+        setModelAttribute("agent", String.valueOf(agent));
         return this;
     }
 
@@ -131,20 +149,20 @@ public class V1RulesComponentImplementationModel extends V1ComponentImplementati
      * {@inheritDoc}
      */
     @Override
-    public RulesAuditModel getRulesAudit() {
-        if (_rulesAudit == null) {
-            _rulesAudit = (RulesAuditModel)getFirstChildModelStartsWith(RulesAuditModel.RULES_AUDIT);
+    public AuditModel getAudit() {
+        if (_audit == null) {
+            _audit = (AuditModel)getFirstChildModelStartsWith(AuditModel.AUDIT);
         }
-        return _rulesAudit;
+        return _audit;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public RulesComponentImplementationModel setRulesAudit(RulesAuditModel rulesAudit) {
-        setChildModel(rulesAudit);
-        _rulesAudit = rulesAudit;
+    public RulesComponentImplementationModel setAudit(AuditModel audit) {
+        setChildModel(audit);
+        _audit = audit;
         return this;
     }
 

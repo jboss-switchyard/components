@@ -24,6 +24,7 @@ import java.util.List;
 import org.switchyard.common.io.resource.Resource;
 import org.switchyard.config.model.composite.ComponentImplementationModel;
 import org.switchyard.config.model.resource.ResourceModel;
+import org.switchyard.integration.rules.config.model.AuditModel;
 
 /**
  * A "bpm" ComponentImplementationModel.
@@ -73,6 +74,21 @@ public interface BPMComponentImplementationModel extends ComponentImplementation
     public BPMComponentImplementationModel setProcessId(String processId);
 
     /**
+     * Gets the "agent" attribute.
+     *
+     * @return the "agent" attribute
+     */
+    public boolean isAgent();
+
+    /**
+     * Sets the "agent" attribute.
+     *
+     * @param agent the "agent" attribute
+     * @return this instance (useful for chaining)
+     */
+    public BPMComponentImplementationModel setAgent(boolean agent);
+
+    /**
      * Gets the "messageContentInName" attribute.
      *
      * @return the "messageContentInName" attribute
@@ -114,6 +130,19 @@ public interface BPMComponentImplementationModel extends ComponentImplementation
      * @return this BPMComponentImplementationModel (useful for chaining)
      */
     public BPMComponentImplementationModel addProcessAction(ProcessActionModel processAction);
+
+    /**
+     * Gets the "audit" child model.
+     * @return the "audit" child model
+     */
+    public AuditModel getAudit();
+
+    /**
+     * Sets the "audit" child model.
+     * @param audit the "audit" child model
+     * @return this RulesComponentImplementationModel (useful for chaining)
+     */
+    public BPMComponentImplementationModel setAudit(AuditModel audit);
 
     /**
      * Gets the child task handler models.

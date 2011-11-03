@@ -29,9 +29,9 @@ import org.switchyard.config.model.Model;
 public interface RulesActionModel extends Model {
 
     /**
-     * The rulesAction XML element.
+     * The action XML element.
      */
-    public static final String RULES_ACTION = "rulesAction";
+    public static final String ACTION = "action";
 
     /**
      * Gets the name of the action.
