@@ -50,17 +50,23 @@
         <org.switchyard.test.soap.port>48080</org.switchyard.test.soap.port>
 
         <!-- Dependency versions - please keep these in alphabetical order -->
+        <version.ant>1.7.0</version.ant>
         <version.camel>2.8.0</version.camel>
         <version.clojure>1.3.0-alpha5</version.clojure>
         <version.commonman>1.0</version.commonman>
+        <version.easymock>2.0</version.easymock>
+        <version.eclipse.jdt>3.2.0.658</version.eclipse.jdt>
         <version.hornetq>2.2.2.Final</version.hornetq>
         <version.javax.jms>1.1</version.javax.jms>
         <version.jboss.vfs>3.0.1.GA</version.jboss.vfs>
+        <version.jmock>1.2.0</version.jmock>
         <version.maven-shade-plugin>1.4</version.maven-shade-plugin>
         <version.netty>3.2.1.Final</version.netty>
         <version.riftsaw.ode>3.0.0.20111024-M1</version.riftsaw.ode>
 		<version.riftsaw.engine>3.0.0.20111024-M1</version.riftsaw.engine>
         <version.servlet>2.5</version.servlet>
+        <version.shrinkwrap.forgebeta3>1.0.0-alpha-11</version.shrinkwrap.forgebeta3>
+        <version.shrinkwrap.descriptors>1.0.0-beta-1</version.shrinkwrap.descriptors>
         <version.spring>3.0.5.RELEASE</version.spring>
         <version.weld>1.1.0.Final</version.weld>
         <version.wsdl4j>1.6.2</version.wsdl4j>
