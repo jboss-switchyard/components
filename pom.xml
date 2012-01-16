@@ -102,5 +102,15 @@
             <artifactId>switchyard-test</artifactId>
             <scope>test</scope>
         </dependency>
+       <dependency>
+          <groupId>org.jboss.interceptor</groupId>
+          <artifactId>jboss-interceptor-core</artifactId>
+       </dependency>
+        <dependency>
+           <groupId>junit</groupId>
+           <artifactId>junit</artifactId>
+           <scope>test</scope>
+           <optional>true</optional>
+        </dependency>
     </dependencies>
 </project>
