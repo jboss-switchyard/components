@@ -25,6 +25,7 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.Processor;
 import org.apache.camel.ProducerTemplate;
+import org.apache.log4j.Logger;
 import org.switchyard.BaseHandler;
 import org.switchyard.Exchange;
 import org.switchyard.ExchangePattern;
@@ -44,6 +45,8 @@ import org.switchyard.composer.MessageComposer;
  */
 public class OutboundHandler extends BaseHandler {
     
+    private static Logger _logger = Logger.getLogger(OutboundHandler.class);
+    
     private final MessageComposer<org.apache.camel.Message> _messageComposer;
     private final ProducerTemplate _producerTemplate;
     private final CamelContext _camelContext;
@@ -60,16 +63,23 @@ public class OutboundHandler extends BaseHandler {
         if (uri == null) {
             throw new IllegalArgumentException("uri argument must not be null");
         }
-        _uri = uri;
-        
         if (context == null) {
             throw new IllegalArgumentException("camelContext argument must not be null");
         }
+        _uri = uri;
         _camelContext = context;
-        
         _producerTemplate = _camelContext.createProducerTemplate();
-        
         _messageComposer = messageComposer;
+    }
+    
+    /**
+     * Starts the {@link ProducerTemplate}.
+     * 
+     * @throws Exception If an error occurs while trying to start the {@link ProducerTemplate}.
+     */
+    public void start() throws Exception {
+        _logger.debug("Starting " + this);
+        _producerTemplate.start();
     }
     
     /**
@@ -78,6 +88,7 @@ public class OutboundHandler extends BaseHandler {
      * @throws Exception If an error occurs while trying to stop the {@link ProducerTemplate}.
      */
     public void stop() throws Exception {
+        _logger.debug("Stopping " + this);
         _producerTemplate.stop();
     }
 
@@ -156,6 +167,16 @@ public class OutboundHandler extends BaseHandler {
      */
     public String getUri() {
         return _uri;
+    }
+    
+    /**
+     * Returns a String representation of this object instance.
+     * 
+     * @return {@code String} string representation.
+     */
+    @Override
+    public String toString() {
+        return "OutboundHandler [uri=" + _uri + ", producerTemplate=" + _producerTemplate.getClass().getName() + "]";
     }
     
 }
