@@ -24,12 +24,17 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import javax.xml.namespace.QName;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.switchyard.ServiceReference;
+import org.switchyard.deploy.internal.Deployment;
 import org.switchyard.test.Invoker;
 import org.switchyard.test.ServiceOperation;
 import org.switchyard.test.SwitchYardRunner;
 import org.switchyard.test.SwitchYardTestCaseConfig;
+import org.switchyard.test.SwitchYardTestKit;
 import org.switchyard.test.mixins.CDIMixIn;
 
 /**
@@ -44,10 +49,31 @@ public class CamelImplementationTest {
 
     @ServiceOperation("OrderService.getTitleForItem")
     private Invoker _getTitleForItem;
+    
+    private SwitchYardTestKit _testKit;
+    private Deployment _deployment;
 
     @Test
     public void sendOneWayMessageThroughCamelToSwitchYardService() throws Exception {
         final String title = _getTitleForItem.sendInOut("10").getContent(String.class);
         assertThat(title, is(equalTo("Fletch")));
+    }
+    
+    @Test
+    public void verifyThatOutboundHandlersAreStopped() {
+        final QName serviceName = new QName("urn:camel-core:test:1.0", "OutputService");
+        final CamelActivator camelActivator = getCamelActivator();
+        assertThat(camelActivator.getOutboundHandlersForService(serviceName).size(), is(1));
+        camelActivator.stop(getServiceRef(serviceName));
+        camelActivator.destroy(getServiceRef(serviceName));
+        assertThat(camelActivator.getOutboundHandlersForService(serviceName).size(), is(0));
+    }
+    
+    private CamelActivator getCamelActivator() {
+        return (CamelActivator) _deployment.findActivator("camel");
+    }
+    
+    private ServiceReference getServiceRef(final QName serviceName) {
+        return _testKit.getServiceDomain().getService(serviceName);
     }
 }

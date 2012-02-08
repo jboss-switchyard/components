@@ -20,6 +20,10 @@
 
     <sca:composite name="OrderService" targetNamespace="urn:camel-core:test:1.0">
     
+        <sca:reference multiplicity="1..1" name="OutputService" promote="OutputService">
+            <binding.camel configURI="direct:///output"/>
+        </sca:reference>
+    
         <sca:component name="WarehouseComponent" >
             <bean:implementation.bean class="org.switchyard.component.camel.deploy.support.WarehouseServiceImpl"/>
             <sca:service name="WarehouseService">

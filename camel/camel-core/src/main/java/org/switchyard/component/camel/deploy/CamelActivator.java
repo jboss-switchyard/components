@@ -349,7 +349,7 @@ public class CamelActivator extends BaseActivator {
         return null;
     }
 
-    private Set<OutboundHandler> getOutboundHandlersForService(final QName serviceName) {
+    protected Set<OutboundHandler> getOutboundHandlersForService(final QName serviceName) {
         Set<OutboundHandler> handlers = _references.get(serviceName);
         if (handlers == null) {
             handlers = new HashSet<OutboundHandler>();
@@ -368,12 +368,14 @@ public class CamelActivator extends BaseActivator {
     @Override
     public void start(final ServiceReference serviceReference) {
         ServiceReferences.add(serviceReference.getName(), serviceReference);
+        startOutboundHandlers(serviceReference);
         startInboundHandlers(serviceReference);
     }
 
     @Override
     public void stop(ServiceReference serviceReference) {
         stopInboundHandlers(serviceReference);
+        stopOutboundHandlers(serviceReference);
         ServiceReferences.remove(serviceReference.getName());
     }
 
@@ -389,10 +391,24 @@ public class CamelActivator extends BaseActivator {
             }
         }
     }
+    
+    private void startOutboundHandlers(final ServiceReference serviceReference) {
+        final Set<OutboundHandler> handlers = _references.get(serviceReference.getName());
+        if (handlers != null) {
+            for (OutboundHandler outboundHandler : handlers) {
+                try {
+                    outboundHandler.start();
+                } catch (Exception e) {
+                    throw new SwitchYardException(e);
+                }
+            }
+        }
+    }
 
     @Override
     public void destroy(final ServiceReference service) {
         _bindings.remove(service.getName());
+        _references.remove(service.getName());
         stopCamelContext();
     }
 
@@ -403,6 +419,19 @@ public class CamelActivator extends BaseActivator {
                 try {
                     inboundHandler.stop(serviceReference);
                 } catch (Exception e) {
+                    throw new SwitchYardException(e);
+                }
+            }
+        }
+    }
+    
+    private void stopOutboundHandlers(ServiceReference serviceReference) {
+        final Set<OutboundHandler> handlers = _references.get(serviceReference.getName());
+        if (handlers != null) {
+            for (OutboundHandler outboundHandler : handlers) {
+                try {
+                    outboundHandler.stop();
+                } catch (final Exception e) {
                     throw new SwitchYardException(e);
                 }
             }
