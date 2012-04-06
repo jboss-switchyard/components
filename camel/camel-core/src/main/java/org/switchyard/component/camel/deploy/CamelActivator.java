@@ -239,10 +239,6 @@ public class CamelActivator extends BaseActivator {
                     final String serviceName = componentUri.getHost();
                     final String namespace = ComponentNameComposer.getNamespaceFromURI(componentUri);
                     final QName refServiceName = new QName(namespace, serviceName);
-                    if (!containsServiceRef(ccim.getComponent().getReferences(), serviceName)) {
-                        throw new SwitchYardException("Could find the service reference for '" + serviceName + "'" 
-                        + " which is referenced in " + to);
-                    }
                     
                     final ServiceReference service = getServiceDomain().getServiceReference(refServiceName);
                     if (service == null) {
@@ -252,15 +248,6 @@ public class CamelActivator extends BaseActivator {
                 }
             }
         }
-    }
-    
-    private boolean containsServiceRef(final List<ComponentReferenceModel> refs, final String serviceName) {
-        for (ComponentReferenceModel refModel : refs) {
-            if (refModel.getName().equals(serviceName)) {
-                return true;
-            }
-        }
-        return false;
     }
     
     private void addFromEndpointToRouteDefinition(final RouteDefinition rd, final String fromEndpointUri) throws Exception {
