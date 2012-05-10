@@ -124,7 +124,8 @@ public class InboundHandler extends BaseHandler {
             BaseWebService wsProvider = new BaseWebService();
             // Hook the handler
             wsProvider.setConsumer(this);
-            
+            wsProvider.setInvocationClassLoader(Thread.currentThread().getContextClassLoader());
+
             _contracts.putAll(WSDLUtil.getContracts(_wsdlPort, service));
 
             _endpoint = Endpoint.create(wsProvider);
