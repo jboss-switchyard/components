@@ -236,7 +236,11 @@ public final class SOAPUtil {
      * @throws ParserConfigurationException for errors during creation
      * @throws XMLStreamException If the SOAP message could not be read
      */
-    public static Document parseAsDom(final String soapRes) throws ParserConfigurationException, XMLStreamException {
+    public static Document parseAsDom(String soapRes) throws ParserConfigurationException, XMLStreamException {
+        if (!soapRes.trim().startsWith("<?xml")) {
+            // without this, java 7 xml processing is unhappy (you get a NPE due to a null xml version when starting the document)
+            soapRes = "<?xml version='1.0' encoding='UTF-8'?>\n" + soapRes;
+        }
         final XMLEventReader reader = XMLHelper.getXMLEventReader(new ByteArrayInputStream(soapRes.getBytes()));
         return XMLHelper.createDocument(reader);
     }
