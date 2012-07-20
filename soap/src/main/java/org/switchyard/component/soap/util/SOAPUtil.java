@@ -19,8 +19,8 @@
  
 package org.switchyard.component.soap.util;
 
-import java.io.ByteArrayInputStream;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Iterator;
 
@@ -236,8 +236,12 @@ public final class SOAPUtil {
      * @throws ParserConfigurationException for errors during creation
      * @throws XMLStreamException If the SOAP message could not be read
      */
-    public static Document parseAsDom(final String soapRes) throws ParserConfigurationException, XMLStreamException {
-        final XMLEventReader reader = XMLHelper.getXMLEventReader(new ByteArrayInputStream(soapRes.getBytes()));
+    public static Document parseAsDom(String soapRes) throws ParserConfigurationException, XMLStreamException {
+        if (!soapRes.trim().startsWith("<?xml")) {
+            // without this, java 7 xml processing is unhappy (you get a NPE due to a null xml version when starting the document)
+            soapRes = "<?xml version='1.0'?>\n" + soapRes;
+        }
+        final XMLEventReader reader = XMLHelper.getXMLEventReader(new StringReader(soapRes));
         return XMLHelper.createDocument(reader);
     }
 
