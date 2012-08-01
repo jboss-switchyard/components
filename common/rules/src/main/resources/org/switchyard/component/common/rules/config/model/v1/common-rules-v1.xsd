@@ -66,6 +66,8 @@ MA  02110-1301, USA.
             <enumeration value="CONSOLE"/>
             <enumeration value="FILE"/>
             <enumeration value="THREADED_FILE"/>
+            <enumeration value="JPA"/>
+            <enumeration value="JMS"/>
         </restriction>
     </simpleType>
 
