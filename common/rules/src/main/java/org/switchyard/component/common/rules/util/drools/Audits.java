@@ -24,11 +24,21 @@ import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.switchyard.common.lang.Strings;
 import org.switchyard.component.common.rules.AuditType;
 import org.switchyard.component.common.rules.config.model.AuditModel;
+import org.switchyard.component.common.bpm.audit.SYKnowledgeRuntimeLoggerFactory;
 
 /**
  * Drools Audit Utilities.
  *
  * @author David Ward &lt;<a href="mailto:dward@jboss.org">dward@jboss.org</a>&gt; (C) 2011 Red Hat Inc.
+ *
+ * JA Bride :  1 August 2012
+ *   - added first draft to include optional:  org.jbpm.process.audit.JPAWorkingMemoryDbLogger
+ *   - JPAWorkingMemoryDbLogger implements org.drools.audit.WorkingMemoryLogger for capturing jbpm5 process engine events
+ *   - JPAWorkingMemoryDbLogger than persists those process engine events directly to a database
+ *   - JAPWorkingMemoryDbLogger does not implement the drools KnowledgeRuntimeLogger (as required in switchyard ),
+ *       so the factories needed to create a KnowledgeRuntimeLogger implementation from a JPAWorkingMemoryDbLogger are
+ *       now included here in switchyard
+ *   - ideally, these factories would be included directly in the jbpm5 upstream .... i'll work with the jbpm5 team on that.
  */
 public final class Audits {
 
@@ -57,6 +67,8 @@ public final class Audits {
                     return KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, fileName);
                 case THREADED_FILE:
                     return KnowledgeRuntimeLoggerFactory.newThreadedFileLogger(ksession, fileName, interval.intValue());
+                case JPA:
+                	return SYKnowledgeRuntimeLoggerFactory.newJPALogger(ksession);
             }
         }
         return null;

@@ -30,6 +30,8 @@ public enum AuditType {
     /** The file audit logger. */
     FILE,
     /** The threaded file audit logger. */
-    THREADED_FILE;
+    THREADED_FILE,
+    /** The JPA audit logger */
+    JPA;
 
 }
