@@ -20,7 +20,6 @@
 package org.switchyard.component.resteasy.util;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
