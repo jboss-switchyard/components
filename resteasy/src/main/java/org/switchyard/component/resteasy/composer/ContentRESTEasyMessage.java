@@ -16,35 +16,46 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
  * MA  02110-1301, USA.
  */
-
-package org.switchyard.component.resteasy;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+package org.switchyard.component.resteasy.composer;
 
 /**
- * A Greeter Resource.
+ * A content RESTEasy message.
  *
- * @author Magesh Kumar B <mageshbk@jboss.com> (C) 2012 Red Hat Inc.
+ * @author David Ward &lt;<a href="mailto:dward@jboss.org">dward@jboss.org</a>&gt; &copy; 2012 Red Hat Inc.
  */
-@Path("/greeters")
-public interface HelloResource {
+public class ContentRESTEasyMessage implements RESTEasyMessage {
 
-    @PUT
-    @Path("{name}")
-    String addGreeter(@PathParam("name") String name);
-
-    @GET
-    @Path("{name}")
-    String greeterInfo(@PathParam("name") String name);
+    private Object _content;
 
     /**
-     * A multi parameter test. A url will be of the form /greeters/name and anotherName will be in the request body.
+     * Creates a new content RESTEasy message.
      */
-    @POST
-    @Path("{name}")
-    String sayHello(String anotherName);
+    public ContentRESTEasyMessage() {}
+
+    /**
+     * Creates a new content RESTEasy message, given the specified content.
+     * @param content the specified content
+     */
+    public ContentRESTEasyMessage(Object content) {
+        setContent(content);
+    }
+
+    /**
+     * Gets the content.
+     * @return the content
+     */
+    public Object getContent() {
+        return _content;
+    }
+
+    /**
+     * Sets the content.
+     * @param content the content
+     * @return this instance (useful for chaining)
+     */
+    public RESTEasyMessage setContent(Object content) {
+        _content = content;
+        return this;
+    }
+
 }
