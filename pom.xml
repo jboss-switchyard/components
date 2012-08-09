@@ -67,6 +67,7 @@
         <module>hornetq</module>
         <module>jca</module>
         <module>tools/forge</module>
+        <module>script</module>
     </modules>
 
     <repositories>
