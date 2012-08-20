@@ -40,7 +40,6 @@ import org.switchyard.Scope;
 import org.switchyard.component.bpel.BPELFault;
 import org.switchyard.component.bpel.config.model.BPELComponentImplementationModel;
 import org.switchyard.component.bpel.exchange.BPELExchangeHandler;
-import org.switchyard.component.soap.composer.SOAPComposition;
 import org.switchyard.exception.SwitchYardException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -50,6 +49,8 @@ import org.w3c.dom.Node;
  *
  */
 public class RiftsawBPELExchangeHandler extends BaseHandler implements BPELExchangeHandler {
+    
+    public static final String SOAP_MESSAGE_HEADER = "soap_message_header";
 
     private static final String VFS_SCHEME = "vfs";
 
@@ -230,7 +231,7 @@ public class RiftsawBPELExchangeHandler extends BaseHandler implements BPELExcha
         Iterator<Property> h = exchange.getContext().getProperties(Scope.EXCHANGE).iterator();
         while (h.hasNext()) {
             Property p = h.next();
-            if (p.hasLabel(SOAPComposition.SOAP_MESSAGE_HEADER)) {
+            if (p.hasLabel(SOAP_MESSAGE_HEADER)) {
                 headers.put(p.getName(), p.getValue());
             }
         }
@@ -264,7 +265,7 @@ public class RiftsawBPELExchangeHandler extends BaseHandler implements BPELExcha
                 // Set header parts for a response message
                 Set<String> keys = headers.keySet(); // headers are set by invoke method !!!
                 for (String key : keys) {
-                    exchange.getContext().setProperty(key,headers.get(key)).addLabels(SOAPComposition.SOAP_MESSAGE_HEADER);
+                    exchange.getContext().setProperty(key,headers.get(key)).addLabels(SOAP_MESSAGE_HEADER);
                 }
 
                 exchange.send(message);
