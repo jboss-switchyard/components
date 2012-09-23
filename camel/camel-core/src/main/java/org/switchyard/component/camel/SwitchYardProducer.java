@@ -98,6 +98,7 @@ public class SwitchYardProducer extends DefaultProducer {
         // Set appropriate policy based on Camel exchange properties
         if (camelExchange.isTransacted()) {
             PolicyUtil.provide(switchyardExchange, TransactionPolicy.PROPAGATES_TRANSACTION);
+            PolicyUtil.provide(switchyardExchange, TransactionPolicy.MANAGED_TRANSACTION_GLOBAL);
         }
         
         Message switchyardMessage = _messageComposer.compose(new CamelBindingData(camelExchange.getIn()), switchyardExchange, true);
