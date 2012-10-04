@@ -30,5 +30,13 @@
     <trfm:transform.java from="java:java.lang.Exception"
                          to="{http://www.w3.org/2003/05/soap-envelope}Fault"
                          class="org.switchyard.component.soap.DefaultSOAP12ExceptionTransformer"/>
+    <!-- HandlerException to SOAP 1.1 Fault transformer... -->
+    <trfm:transform.java from="java:org.switchyard.HandlerException"
+                         to="{http://schemas.xmlsoap.org/soap/envelope/}Fault"
+                         class="org.switchyard.component.soap.HandlerSOAP11ExceptionTransformer"/>
+    <!-- HandlerException to SOAP 1.2 Fault transformer... -->
+    <trfm:transform.java from="java:org.switchyard.HandlerException"
+                         to="{http://www.w3.org/2003/05/soap-envelope}Fault"
+                         class="org.switchyard.component.soap.HandlerSOAP12ExceptionTransformer"/>
 
 </transforms>
