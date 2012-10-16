@@ -18,6 +18,9 @@
  */
 package org.switchyard.component.common.rules.util.drools;
 
+import static org.apache.commons.lang.text.StrSubstitutor.replaceSystemProperties;
+
+import org.apache.commons.lang.text.StrSubstitutor;
 import org.drools.event.KnowledgeRuntimeEventManager;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
@@ -45,7 +48,7 @@ public final class Audits {
                 type = AuditType.THREADED_FILE;
             }
             String log = Strings.trimToNull(audit.getLog());
-            String fileName = log != null ? log : "event";
+            String fileName = log != null ? replaceSystemProperties(log) : "event";
             Integer interval = audit.getInterval();
             if (interval == null) {
                 interval = Integer.valueOf(1000);
