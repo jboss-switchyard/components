@@ -12,7 +12,7 @@ import org.switchyard.config.model.Descriptor;
  * Date: 11/11/12
  * Time: 3:30 PM
  */
-public class V1CamelAmqpBindingModel extends V1GenericMqBindingModel implements CamelAmqpBindingModel{
+public class V1CamelAmqpBindingModel extends V1GenericMqBindingModel implements CamelAmqpBindingModel {
 
     public static final String AMQP = "amqp";
 
