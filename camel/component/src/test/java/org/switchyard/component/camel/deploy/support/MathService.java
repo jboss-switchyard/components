@@ -27,8 +27,8 @@ package org.switchyard.component.camel.deploy.support;
  */
 public interface MathService {
 
-    double abs(double value);
-    double cos(double value);
-    double pow(double value) throws IllegalArgumentException;
-
+    Double abs(Double value);
+    Double cos(Double value);
+    Double pow(Double value) throws IllegalArgumentException;
+    
 }
