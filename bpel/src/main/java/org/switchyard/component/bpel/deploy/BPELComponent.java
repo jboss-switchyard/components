@@ -19,10 +19,13 @@
 package org.switchyard.component.bpel.deploy;
 
 import org.apache.log4j.Logger;
+import org.apache.ode.bpel.evt.BpelEvent;
 import org.riftsaw.engine.BPELEngine;
 import org.riftsaw.engine.BPELEngineFactory;
+import org.riftsaw.engine.BPELEngineListener;
 import org.riftsaw.engine.internal.BPELEngineImpl;
 import org.switchyard.ServiceDomain;
+import org.switchyard.component.bpel.event.BPELEvent;
 import org.switchyard.component.bpel.riftsaw.RiftsawServiceLocator;
 import org.switchyard.config.Configuration;
 import org.switchyard.deploy.Activator;
@@ -56,7 +59,7 @@ public class BPELComponent extends BaseComponent {
         super.init(config);   
     }
     
-    protected BPELEngine getEngine() {
+    protected BPELEngine getEngine(final ServiceDomain domain) {
         
         synchronized (this) {
             if (_engine == null) {
@@ -97,6 +100,13 @@ public class BPELComponent extends BaseComponent {
                     }
                     
                     _engine.init(_locator, _config);
+                    
+                    _engine.register(new BPELEngineListener() {
+                        public void onEvent(BpelEvent bpelEvent) {
+                            domain.getEventPublisher().publish(new BPELEvent(bpelEvent));
+                        }
+                    });
+                    
                 } catch (Exception e) {
                     throw new SwitchYardException("Failed to initialize the engine: "+ e, e);
                 } finally {
@@ -124,6 +134,7 @@ public class BPELComponent extends BaseComponent {
             } catch (Exception e) {
                 LOG.error("Failed to close BPEL engine", e);
             }
+            
         }
     }
     
@@ -135,7 +146,7 @@ public class BPELComponent extends BaseComponent {
         BPELEngine engine=null;
         
         if (domain != null) {
-            engine = getEngine();
+            engine = getEngine(domain);
         }
         
         BPELActivator activator=new BPELActivator(engine, _locator,
