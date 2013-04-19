@@ -41,11 +41,14 @@ import org.switchyard.ExchangePattern;
 import org.switchyard.HandlerException;
 import org.switchyard.Message;
 import org.switchyard.Property;
+import org.switchyard.Scope;
 import org.switchyard.component.bpel.BPELFault;
 import org.switchyard.component.bpel.config.model.BPELComponentImplementationModel;
 import org.switchyard.component.bpel.exchange.BPELExchangeHandler;
 import org.switchyard.component.common.label.EndpointLabel;
 import org.switchyard.exception.SwitchYardException;
+import org.switchyard.handlers.TransactionHandler;
+import org.switchyard.label.BehaviorLabel;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -309,6 +312,9 @@ public class RiftsawBPELExchangeHandler extends BaseHandler implements BPELExcha
             } catch (Exception e) {
                 throw new HandlerException(e);
             }
+            
+            // TODO make a decision if the transaction should be rolled back or not with analyzing the fault
+            exchange.getContext().setProperty(TransactionHandler.ROLLBACK_ON_FAULT_PROPERTY, Boolean.FALSE, Scope.EXCHANGE).addLabels(BehaviorLabel.TRANSIENT.label());
             
             throw new BPELFault(fault);
             
