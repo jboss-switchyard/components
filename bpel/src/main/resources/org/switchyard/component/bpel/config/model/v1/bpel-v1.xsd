@@ -2,7 +2,7 @@
 <!--
 Copyright (c) OASIS Open 2008. All Rights Reserved.
 -->
-<schema targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200903"
+<schema targetNamespace="http://docs.oasis-open.org/ns/opencsa/sca/200912"
         xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912"
 		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 		xmlns="http://www.w3.org/2001/XMLSchema"
