@@ -28,6 +28,7 @@ import org.apache.camel.Endpoint;
 import org.apache.camel.impl.DefaultEndpoint;
 import org.apache.camel.model.FromDefinition;
 import org.apache.camel.model.ProcessorDefinition;
+import org.apache.camel.model.RecipientListDefinition;
 import org.apache.camel.model.RouteDefinition;
 import org.apache.camel.model.ToDefinition;
 import org.switchyard.common.lang.Strings;
@@ -136,6 +137,14 @@ public final class SwitchYardRouteDefinition extends RouteDefinition {
             String new_uri = addNamespaceParameter(old_uri, namespace);
             toDef.setUri(new_uri);
             setEndpointUri(toDef.getEndpoint(), namespace);
+        } else if (procDef instanceof RecipientListDefinition) {
+            RecipientListDefinition<?> recipientListDefinition = (RecipientListDefinition<?>)procDef;
+            String expression = recipientListDefinition.getExpression().getExpression();
+            if ((expression.contains("switchyard://")) && (expression.contains("?"))) {
+                recipientListDefinition.getExpression().setExpression(expression + "&namespace=" + namespace);
+            } else if ((expression.contains("switchyard://")) && (!expression.contains("?"))) {
+                recipientListDefinition.getExpression().setExpression(expression + "?namespace=" + namespace);
+            }
         }
         for (ProcessorDefinition<?> procDefChild : procDef.getOutputs()) {
             addNamespaceParameterTo(procDefChild, namespace);
