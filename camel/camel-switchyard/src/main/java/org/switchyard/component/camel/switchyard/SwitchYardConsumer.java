@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.switchyard.component.camel;
+package org.switchyard.component.camel.switchyard;
 
 import static org.switchyard.Exchange.FAULT_TYPE;
 import static org.switchyard.Exchange.OPERATION_NAME;

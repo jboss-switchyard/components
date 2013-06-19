@@ -16,22 +16,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
  * MA  02110-1301, USA.
  */
-package org.switchyard.component.camel.test;
+package org.switchyard.component.camel.switchyard.test;
 
-import java.util.Map;
-
-import org.apache.camel.Endpoint;
-import org.apache.camel.component.direct.DirectComponent;
+import org.apache.camel.Message;
+import org.switchyard.component.camel.common.composer.BindingDataCreator;
+import org.switchyard.component.camel.common.composer.CamelBindingData;
 
 /**
- * Dummy component for test purposes.
+ * Dedicated binding creator which handles NettyEndpoint exchanges.
  */
-public class NettyComponent extends DirectComponent {
+public class NettyBindingDataCreator implements BindingDataCreator<CamelBindingData> {
 
-    protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
-        Endpoint endpoint = new NettyEndpoint(uri, this);
-        setProperties(endpoint, parameters);
-        return endpoint;
+    @Override
+    public CamelBindingData createBindingData(Message message) {
+        return new SecureBindingData(message);
     }
 
 }

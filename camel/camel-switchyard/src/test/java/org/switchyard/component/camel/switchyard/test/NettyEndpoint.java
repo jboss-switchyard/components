@@ -16,14 +16,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
  * MA  02110-1301, USA.
  */
-package org.switchyard.component.camel.util;
+package org.switchyard.component.camel.switchyard.test;
+
+import org.apache.camel.component.direct.DirectEndpoint;
 
 /**
- * Simple service interface for test purposes.
- *
+ * Dummy endpoint for testing purposes.
  */
-public interface TestService {
+public class NettyEndpoint extends DirectEndpoint {
 
-    void foo(String payload);
+    public NettyEndpoint(String uri, NettyComponent component) {
+        super(uri, component);
+    }
 
 }

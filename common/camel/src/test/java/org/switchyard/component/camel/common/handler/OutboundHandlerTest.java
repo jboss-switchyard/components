@@ -51,6 +51,7 @@ import org.switchyard.Scope;
 import org.switchyard.ServiceDomain;
 import org.switchyard.ServiceReference;
 import org.switchyard.common.camel.SwitchYardCamelContext;
+import org.switchyard.common.camel.SwitchYardCamelContextImpl;
 import org.switchyard.component.camel.common.composer.CamelBindingData;
 import org.switchyard.component.camel.common.composer.CamelComposition;
 import org.switchyard.component.camel.common.model.CamelBindingModel;
@@ -211,7 +212,7 @@ public class OutboundHandlerTest extends CamelTestSupport {
 
     @Override
     protected CamelContext createCamelContext() throws Exception {
-        return new SwitchYardCamelContext();
+        return new SwitchYardCamelContextImpl();
     }
 
     @Override

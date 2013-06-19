@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
  * MA  02110-1301, USA.
  */
-package org.switchyard.component.camel;
+package org.switchyard.component.camel.switchyard;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -31,9 +31,9 @@ import org.switchyard.Property;
 import org.switchyard.Scope;
 import org.switchyard.component.camel.common.handler.InboundHandler;
 import org.switchyard.component.camel.common.model.v1.V1BaseCamelBindingModel;
-import org.switchyard.component.camel.util.Composer;
-import org.switchyard.component.camel.util.Mapper;
-import org.switchyard.component.camel.util.TestService;
+import org.switchyard.component.camel.switchyard.util.Composer;
+import org.switchyard.component.camel.switchyard.util.Mapper;
+import org.switchyard.component.camel.switchyard.util.TestService;
 import org.switchyard.component.test.mixins.cdi.CDIMixIn;
 import org.switchyard.config.Configuration;
 import org.switchyard.config.ConfigurationPuller;

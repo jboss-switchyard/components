@@ -30,6 +30,16 @@
     <artifactId>switchyard-component-camel-atom</artifactId>
     <name>SwitchYard: Camel Component :: Atom Binding</name>
     <url>http://switchyard.org</url>
+    <properties>
+        <switchyard.osgi.export.pkg>
+            org.switchyard.component.camel.atom.*
+        </switchyard.osgi.export.pkg>
+        <switchyard.osgi.import>
+            org.apache.camel.component.atom,
+            org.switchyard.config.model;org.switchyard.*;${switchyard.osgi.import.switchyard.version},
+            *
+        </switchyard.osgi.import>
+    </properties>
     <dependencies>
         <!--
         This dependency provides also dependency to component-common-camel and it's

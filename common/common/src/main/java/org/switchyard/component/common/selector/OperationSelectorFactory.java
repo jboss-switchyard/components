@@ -21,10 +21,12 @@ package org.switchyard.component.common.selector;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.apache.log4j.Logger;
+import org.switchyard.ProviderRegistry;
 import org.switchyard.common.type.Classes;
 import org.switchyard.config.model.selector.OperationSelectorModel;
 import org.switchyard.config.model.selector.JavaOperationSelectorModel;
@@ -110,7 +112,7 @@ public abstract class OperationSelectorFactory<T> {
     @SuppressWarnings("rawtypes")
     public static final Map<Class, OperationSelectorFactory> getOperationSelectorFactories() {
         Map<Class, OperationSelectorFactory> factories = new HashMap<Class, OperationSelectorFactory>();
-        ServiceLoader<OperationSelectorFactory> services = ServiceLoader.load(OperationSelectorFactory.class);
+        List<OperationSelectorFactory> services = ProviderRegistry.getProviders(OperationSelectorFactory.class);
         for (OperationSelectorFactory factory : services) {
             factories.put(factory.getTargetClass(), factory);
         }

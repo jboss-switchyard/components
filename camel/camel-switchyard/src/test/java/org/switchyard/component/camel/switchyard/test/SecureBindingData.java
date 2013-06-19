@@ -16,28 +16,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
  * MA  02110-1301, USA.
  */
-package org.switchyard.component.camel.util;
+package org.switchyard.component.camel.switchyard.test;
 
-import org.switchyard.Context;
-import org.switchyard.Scope;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.camel.Message;
 import org.switchyard.component.camel.common.composer.CamelBindingData;
-import org.switchyard.component.camel.common.composer.CamelContextMapper;
+import org.switchyard.component.common.composer.SecurityBindingData;
+import org.switchyard.security.credential.ConfidentialityCredential;
+import org.switchyard.security.credential.Credential;
 
-public class Mapper extends CamelContextMapper {
+/**
+ * Secure binding data for test endpoint.
+ */
+public class SecureBindingData extends CamelBindingData implements SecurityBindingData {
 
-    public static final String PROPERTY = "TestProperty";
-    public static final String VALUE = "TestValue";
-
-    @Override
-    public void mapFrom(CamelBindingData source, Context context) throws Exception {
-        super.mapFrom(source, context);
-        context.setProperty(PROPERTY, VALUE);
+    public SecureBindingData(Message message) {
+        super(message);
     }
 
     @Override
-    public void mapTo(Context context, CamelBindingData target) throws Exception {
-        super.mapTo(context, target);
-        target.getMessage().setHeader(PROPERTY, VALUE);
+    public Set<Credential> extractCredentials() {
+        Set<Credential> credentials = new HashSet<Credential>();
+        credentials.add(new ConfidentialityCredential(true));
+        return credentials;
     }
 
 }
