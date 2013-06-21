@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.switchyard.component.camel;
+package org.switchyard.component.camel.switchyard;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -49,7 +49,7 @@ import org.switchyard.test.SwitchYardRunner;
 import org.switchyard.test.SwitchYardTestCaseConfig;
 
 /**
- * Test for {@link SwitchYardComponent}.
+ * Test for {@link org.switchyard.component.camel.switchyard.SwitchYardComponent}.
  * 
  * @author Daniel Bevenius
  */

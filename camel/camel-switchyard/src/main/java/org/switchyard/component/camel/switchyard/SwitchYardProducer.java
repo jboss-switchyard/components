@@ -16,9 +16,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
  */
-package org.switchyard.component.camel;
+package org.switchyard.component.camel.switchyard;
 
-import static org.switchyard.component.camel.ComponentNameComposer.composeSwitchYardServiceName;
+import static org.switchyard.component.camel.switchyard.ComponentNameComposer.composeSwitchYardServiceName;
 
 import java.util.Set;
 

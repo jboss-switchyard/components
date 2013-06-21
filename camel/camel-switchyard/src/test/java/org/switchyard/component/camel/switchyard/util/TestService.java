@@ -16,28 +16,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
  * MA  02110-1301, USA.
  */
-package org.switchyard.component.camel;
-
-import org.apache.camel.CamelContext;
-import org.apache.camel.test.junit4.CamelTestSupport;
-import org.switchyard.ServiceDomain;
-import org.switchyard.common.camel.SwitchYardCamelContext;
-import org.switchyard.component.camel.common.CamelConstants;
+package org.switchyard.component.camel.switchyard.util;
 
 /**
- * Base class for switchyard-camel integration.
+ * Simple service interface for test purposes.
+ *
  */
-public abstract class SwitchYardComponentTestBase extends CamelTestSupport {
+public interface TestService {
 
-    protected ServiceDomain _serviceDomain;
-
-    protected SwitchYardCamelContext _camelContext;
-
-    @Override
-    protected CamelContext createCamelContext() throws Exception {
-        _camelContext = new SwitchYardCamelContext(false);
-        _camelContext.setServiceDomain(_serviceDomain);
-        return _camelContext;
-    }
+    void foo(String payload);
 
 }

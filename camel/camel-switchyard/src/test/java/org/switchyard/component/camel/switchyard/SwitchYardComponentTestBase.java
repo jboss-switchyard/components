@@ -16,17 +16,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
  * MA  02110-1301, USA.
  */
-package org.switchyard.component.camel.test;
+package org.switchyard.component.camel.switchyard;
 
-import org.apache.camel.component.direct.DirectEndpoint;
+import org.apache.camel.CamelContext;
+import org.apache.camel.test.junit4.CamelTestSupport;
+import org.switchyard.ServiceDomain;
+import org.switchyard.common.camel.SwitchYardCamelContext;
+import org.switchyard.common.camel.SwitchYardCamelContextImpl;
+import org.switchyard.component.camel.common.CamelConstants;
 
 /**
- * Dummy endpoint for testing purposes.
+ * Base class for switchyard-camel integration.
  */
-public class NettyEndpoint extends DirectEndpoint {
+public abstract class SwitchYardComponentTestBase extends CamelTestSupport {
 
-    public NettyEndpoint(String uri, NettyComponent component) {
-        super(uri, component);
+    protected ServiceDomain _serviceDomain;
+
+    protected SwitchYardCamelContextImpl _camelContext;
+
+    @Override
+    protected CamelContext createCamelContext() throws Exception {
+        _camelContext = new SwitchYardCamelContextImpl(false);
+        _camelContext.setServiceDomain(_serviceDomain);
+        return _camelContext;
     }
 
 }

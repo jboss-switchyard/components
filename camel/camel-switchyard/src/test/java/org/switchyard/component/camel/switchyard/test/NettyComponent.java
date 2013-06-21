@@ -16,31 +16,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
  * MA  02110-1301, USA.
  */
-package org.switchyard.component.camel.test;
+package org.switchyard.component.camel.switchyard.test;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
-import org.apache.camel.Message;
-import org.switchyard.component.camel.common.composer.CamelBindingData;
-import org.switchyard.component.common.composer.SecurityBindingData;
-import org.switchyard.security.credential.ConfidentialityCredential;
-import org.switchyard.security.credential.Credential;
+import org.apache.camel.Endpoint;
+import org.apache.camel.component.direct.DirectComponent;
 
 /**
- * Secure binding data for test endpoint.
+ * Dummy component for test purposes.
  */
-public class SecureBindingData extends CamelBindingData implements SecurityBindingData {
+public class NettyComponent extends DirectComponent {
 
-    public SecureBindingData(Message message) {
-        super(message);
-    }
-
-    @Override
-    public Set<Credential> extractCredentials() {
-        Set<Credential> credentials = new HashSet<Credential>();
-        credentials.add(new ConfidentialityCredential(true));
-        return credentials;
+    protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
+        Endpoint endpoint = new NettyEndpoint(uri, this);
+        setProperties(endpoint, parameters);
+        return endpoint;
     }
 
 }

@@ -16,20 +16,32 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
  * MA  02110-1301, USA.
  */
-package org.switchyard.component.camel.test;
+package org.switchyard.component.camel.switchyard.util;
 
-import org.apache.camel.Message;
-import org.switchyard.component.camel.common.composer.BindingDataCreator;
+import org.switchyard.Exchange;
+import org.switchyard.Message;
 import org.switchyard.component.camel.common.composer.CamelBindingData;
+import org.switchyard.component.camel.common.composer.CamelMessageComposer;
 
 /**
- * Dedicated binding creator which handles NettyEndpoint exchanges.
+ * Dummy message composer.
  */
-public class NettyBindingDataCreator implements BindingDataCreator<CamelBindingData> {
+public class Composer extends CamelMessageComposer {
+
+    public static final String COMPOSE_PREFIX = "Composer compose ";
+    public static final String DECOMPOSE_PREFIX = "Composer decompose ";
 
     @Override
-    public CamelBindingData createBindingData(Message message) {
-        return new SecureBindingData(message);
+    public Message compose(CamelBindingData source, Exchange exchange) throws Exception {
+        Message message = super.compose(source, exchange);
+        message.setContent(COMPOSE_PREFIX + message.getContent(String.class));
+        return message;
     }
 
+    @Override
+    public CamelBindingData decompose(Exchange exchange, CamelBindingData target) throws Exception {
+        CamelBindingData decompose = super.decompose(exchange, target);
+        decompose.getMessage().setBody(DECOMPOSE_PREFIX + decompose.getMessage().getBody(String.class));
+        return decompose;
+    }
 }

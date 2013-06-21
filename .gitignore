@@ -11,3 +11,4 @@ bin/
 .DS_Store
 jca/transaction.log
 itests/transaction.log
+.idea

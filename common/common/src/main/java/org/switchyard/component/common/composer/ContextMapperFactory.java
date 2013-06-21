@@ -19,10 +19,12 @@
 package org.switchyard.component.common.composer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.apache.log4j.Logger;
+import org.switchyard.ProviderRegistry;
 import org.switchyard.common.type.Classes;
 import org.switchyard.config.model.composer.ContextMapperModel;
 
@@ -117,7 +119,7 @@ public abstract class ContextMapperFactory<D extends BindingData> {
     @SuppressWarnings("rawtypes")
     public static final Map<Class, ContextMapperFactory> getContextMapperFactories() {
         Map<Class, ContextMapperFactory> factories = new HashMap<Class, ContextMapperFactory>();
-        ServiceLoader<ContextMapperFactory> services = ServiceLoader.load(ContextMapperFactory.class);
+        List<ContextMapperFactory> services = ProviderRegistry.getProviders(ContextMapperFactory.class);
         for (ContextMapperFactory factory : services) {
             factories.put(factory.getBindingDataClass(), factory);
         }

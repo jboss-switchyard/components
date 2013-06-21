@@ -19,10 +19,12 @@
 package org.switchyard.component.common.composer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
 import org.apache.log4j.Logger;
+import org.switchyard.ProviderRegistry;
 import org.switchyard.common.type.Classes;
 import org.switchyard.config.model.composer.MessageComposerModel;
 
@@ -99,7 +101,11 @@ public abstract class MessageComposerFactory<D extends BindingData> {
      */
     @SuppressWarnings("unchecked")
     public static final <F extends BindingData> MessageComposerFactory<F> getMessageComposerFactory(Class<F> targetClass) {
-        return (MessageComposerFactory<F>)getMessageComposerFactories().get(targetClass);
+        MessageComposerFactory<F> factory = (MessageComposerFactory<F>)getMessageComposerFactories().get(targetClass);
+        if (factory == null) {
+            throw new IllegalStateException("Unable to find composer factory for " + targetClass.getName());
+        }
+        return factory;
     }
 
     /**
@@ -109,7 +115,7 @@ public abstract class MessageComposerFactory<D extends BindingData> {
     @SuppressWarnings("rawtypes")
     public static final Map<Class, MessageComposerFactory> getMessageComposerFactories() {
         Map<Class, MessageComposerFactory> factories = new HashMap<Class, MessageComposerFactory>();
-        ServiceLoader<MessageComposerFactory> services = ServiceLoader.load(MessageComposerFactory.class);
+        List<MessageComposerFactory> services = ProviderRegistry.getProviders(MessageComposerFactory.class);
         for (MessageComposerFactory factory : services) {
             factories.put(factory.getBindingDataClass(), factory);
         }

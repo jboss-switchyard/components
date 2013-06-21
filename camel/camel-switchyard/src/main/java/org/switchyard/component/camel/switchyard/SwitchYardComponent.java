@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
  */
-package org.switchyard.component.camel;
+package org.switchyard.component.camel.switchyard;
 
 import java.util.Map;
 

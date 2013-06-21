@@ -19,20 +19,16 @@
 
 package org.switchyard.component.bean.deploy;
 
+import org.switchyard.common.cdi.CDIUtil;
+import org.switchyard.component.bean.ClientProxyBean;
+import org.switchyard.exception.SwitchYardException;
+
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingException;
-
-import org.switchyard.component.bean.ClientProxyBean;
-import org.switchyard.exception.SwitchYardException;
 
 /**
  * Bean Deployment Meta Data.
@@ -143,75 +139,22 @@ public class BeanDeploymentMetaData {
      * @return The BeanDeploymentMetaData.
      */
     public static BeanDeploymentMetaData lookupBeanDeploymentMetaData() {
-        try {
-            BeanManager beanManager = getCDIBeanManager();
-
-            Set<Bean<?>> beans = beanManager.getBeans(BeanDeploymentMetaData.class);
-            if (beans.isEmpty()) {
-                throw new SwitchYardException("Failed to lookup BeanDeploymentMetaData from BeanManager.  Must be bound into BeanManager.  Perhaps SwitchYard CDI Extensions not properly installed in container.");
-            }
-            if (beans.size() > 1) {
-                throw new SwitchYardException("Failed to lookup BeanDeploymentMetaData from BeanManager.  Multiple beans resolved for type '" + BeanDeploymentMetaData.class.getName() + "'.");
-            }
-
-            BeanDeploymentMetaDataCDIBean bean = (BeanDeploymentMetaDataCDIBean) beans.iterator().next();
-
-            return bean.getBeanMetaData();
-        } catch (NamingException e) {
-            throw new SwitchYardException("Failed to lookup BeanManager.  Must be bound into java:comp as per CDI specification.", e);
-        }
-    }
-
-    /**
-     * Get the CDI BeanManager for the current context.
-     * @return The CDI BeanManager for the current context.
-     * @throws NamingException Error looking up BeanManager instance.
-     */
-    public static BeanManager getCDIBeanManager() throws NamingException {
-        BeanManager beanManager = getCDIBeanManager("java:comp");
-
+        BeanManager beanManager = CDIUtil.lookupBeanManager();
         if (beanManager == null) {
-            beanManager = getCDIBeanManager("java:comp/env");
-            if (beanManager == null) {
-                throw new NameNotFoundException("Name BeanManager is not bound in this Context");
-            }
+            throw new SwitchYardException("Failed to lookup BeanManager.  Must be bound into java:comp as per CDI specification.");
         }
 
-        return beanManager;
-    }
-
-    private static BeanManager getCDIBeanManager(String jndiLocation) {
-        Context javaComp = getJavaComp(jndiLocation);
-
-        if (javaComp != null) {
-            try {
-                return (BeanManager) javaComp.lookup("BeanManager");
-            } catch (NamingException e) {
-                return null;
-            }
-        } else {
-            return null;
+        Set<Bean<?>> beans = beanManager.getBeans(BeanDeploymentMetaData.class);
+        if (beans.isEmpty()) {
+            throw new SwitchYardException("Failed to lookup BeanDeploymentMetaData from BeanManager.  Must be bound into BeanManager.  Perhaps SwitchYard CDI Extensions not properly installed in container.");
         }
-    }
-
-    private static Context getJavaComp(String jndiName) {
-        InitialContext initialContext = null;
-
-        try {
-            initialContext = new InitialContext();
-            return (Context) initialContext.lookup(jndiName);
-        } catch (NamingException e) {
-            return null;
-        } catch (Exception e) {
-            throw new SwitchYardException("Unexpected Exception retrieving '" + jndiName + "' from JNDI namespace.", e);
-        } finally {
-            if (initialContext != null) {
-                try {
-                    initialContext.close();
-                } catch (NamingException e) {
-                    throw new SwitchYardException("Unexpected error closing InitialContext.", e);
-                }
-            }
+        if (beans.size() > 1) {
+            throw new SwitchYardException("Failed to lookup BeanDeploymentMetaData from BeanManager.  Multiple beans resolved for type '" + BeanDeploymentMetaData.class.getName() + "'.");
         }
+
+        BeanDeploymentMetaDataCDIBean bean = (BeanDeploymentMetaDataCDIBean) beans.iterator().next();
+
+        return bean.getBeanMetaData();
     }
+
 }

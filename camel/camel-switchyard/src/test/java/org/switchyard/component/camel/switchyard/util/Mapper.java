@@ -16,32 +16,28 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
  * MA  02110-1301, USA.
  */
-package org.switchyard.component.camel.util;
+package org.switchyard.component.camel.switchyard.util;
 
-import org.switchyard.Exchange;
-import org.switchyard.Message;
+import org.switchyard.Context;
+import org.switchyard.Scope;
 import org.switchyard.component.camel.common.composer.CamelBindingData;
-import org.switchyard.component.camel.common.composer.CamelMessageComposer;
+import org.switchyard.component.camel.common.composer.CamelContextMapper;
 
-/**
- * Dummy message composer.
- */
-public class Composer extends CamelMessageComposer {
+public class Mapper extends CamelContextMapper {
 
-    public static final String COMPOSE_PREFIX = "Composer compose ";
-    public static final String DECOMPOSE_PREFIX = "Composer decompose ";
+    public static final String PROPERTY = "TestProperty";
+    public static final String VALUE = "TestValue";
 
     @Override
-    public Message compose(CamelBindingData source, Exchange exchange) throws Exception {
-        Message message = super.compose(source, exchange);
-        message.setContent(COMPOSE_PREFIX + message.getContent(String.class));
-        return message;
+    public void mapFrom(CamelBindingData source, Context context) throws Exception {
+        super.mapFrom(source, context);
+        context.setProperty(PROPERTY, VALUE);
     }
 
     @Override
-    public CamelBindingData decompose(Exchange exchange, CamelBindingData target) throws Exception {
-        CamelBindingData decompose = super.decompose(exchange, target);
-        decompose.getMessage().setBody(DECOMPOSE_PREFIX + decompose.getMessage().getBody(String.class));
-        return decompose;
+    public void mapTo(Context context, CamelBindingData target) throws Exception {
+        super.mapTo(context, target);
+        target.getMessage().setHeader(PROPERTY, VALUE);
     }
+
 }
