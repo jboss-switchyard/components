@@ -101,7 +101,11 @@ public abstract class MessageComposerFactory<D extends BindingData> {
      */
     @SuppressWarnings("unchecked")
     public static final <F extends BindingData> MessageComposerFactory<F> getMessageComposerFactory(Class<F> targetClass) {
-        return (MessageComposerFactory<F>)getMessageComposerFactories().get(targetClass);
+        MessageComposerFactory<F> factory = (MessageComposerFactory<F>)getMessageComposerFactories().get(targetClass);
+        if (factory == null) {
+            throw new IllegalStateException("Unable to find composer factory for " + targetClass.getName());
+        }
+        return factory;
     }
 
     /**
