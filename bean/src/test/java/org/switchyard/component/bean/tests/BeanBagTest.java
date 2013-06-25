@@ -19,32 +19,31 @@
 
 package org.switchyard.component.bean.tests;
 
-import javax.inject.Inject;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.switchyard.Message;
+import org.switchyard.test.Invoker;
+import org.switchyard.test.ServiceOperation;
+import org.switchyard.test.SwitchYardRunner;
+import org.switchyard.test.SwitchYardTestCaseConfig;
+import org.switchyard.component.test.mixins.cdi.CDIMixIn;
 
-import org.switchyard.Context;
-import org.switchyard.component.bean.Service;
+/*
+ * BeanBag unit tests
+ */
+@RunWith(SwitchYardRunner.class)
+@SwitchYardTestCaseConfig(config = "BeanBagTests.xml", mixins = CDIMixIn.class)
+public class BeanBagTest {
 
-@Service(RequestResponse.class)
-public class RequestResponseBean implements RequestResponse {
+    @ServiceOperation("ConsumerService.consumeInOutServiceAddProperty")
+    private Invoker inOutProperty;
 
-    @Inject
-    Context _context;
-    
-    public Object reply(Object message) throws ConsumerException {
-        if(message instanceof ConsumerException) {
-            throw (ConsumerException) message;
-        }
-
-        return message;
-    }
-
-    public Object replyAddProperty(Object message) throws ConsumerException {
-        if(message instanceof ConsumerException) {
-            throw (ConsumerException) message;
-        }
-
-        String val = _context.getProperty("testProp").getValue().toString();
-        return message + val;
+    @Test
+    public void consumeInOutServiceFromBean_new_way_property() {
+        Message responseMsg = inOutProperty.sendInOut("hello");
         
+        Assert.assertEquals("hellotestVal", responseMsg.getContent());
+        Assert.assertEquals("testValMsg", responseMsg.getContext().getProperty("testPropMsg").getValue());
     }
 }

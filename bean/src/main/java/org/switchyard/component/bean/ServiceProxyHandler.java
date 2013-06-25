@@ -24,15 +24,20 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
 import org.switchyard.Exchange;
 import org.switchyard.ExchangePattern;
 import org.switchyard.HandlerException;
 import org.switchyard.Message;
+import org.switchyard.Scope;
 import org.switchyard.ServiceReference;
 import org.switchyard.common.property.PropertyResolver;
 import org.switchyard.common.type.reflect.FieldAccess;
 import org.switchyard.component.bean.deploy.BeanDeploymentMetaData;
+import org.switchyard.component.bean.internal.beanbag.BeanBagImpl;
+import org.switchyard.component.bean.internal.beanbag.BeanBagProxy;
 import org.switchyard.component.bean.internal.context.ContextProxy;
 import org.switchyard.component.bean.internal.message.MessageProxy;
 import org.switchyard.deploy.BaseServiceHandler;
@@ -69,6 +74,8 @@ public class ServiceProxyHandler extends BaseServiceHandler implements ServiceHa
     private Map<String, ServiceReference> _references = 
             new HashMap<String, ServiceReference>();
 
+    private final boolean _beanBagInjected;
+    
     /**
      * Public constructor.
      *
@@ -82,8 +89,20 @@ public class ServiceProxyHandler extends BaseServiceHandler implements ServiceHa
         _serviceBean = serviceBean;
         _serviceMetadata = serviceMetadata;
         _beanDeploymentMetaData = beanDeploymentMetaData;
+        _beanBagInjected = isBeanBagInjected();
     }
 
+    private boolean isBeanBagInjected() {
+        for (Field field : _serviceBean.getClass().getDeclaredFields()) {
+            Inject injectAnno = field.getAnnotation(Inject.class);
+            Class<?> clazz = field.getType();
+            if (injectAnno != null && clazz.equals(BeanBag.class)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * Called when a message is sent through an exchange.
      *
@@ -147,6 +166,7 @@ public class ServiceProxyHandler extends BaseServiceHandler implements ServiceHa
 
         if (invocation != null) {
             ExchangePattern exchangePattern = exchange.getContract().getProviderOperation().getExchangePattern();
+            BeanBagImpl beanBag = null;
             try {
 
                 if (_logger.isDebugEnabled()) {
@@ -158,6 +178,12 @@ public class ServiceProxyHandler extends BaseServiceHandler implements ServiceHa
                 Object responseObject;
                 ContextProxy.setContext(exchange.getContext());
                 MessageProxy.setMessage(exchange.getMessage());
+
+                if (_beanBagInjected) {
+                    beanBag = new BeanBagImpl();
+                    setBeanBag(beanBag);
+                }
+                
                 try {
                     responseObject = invocation.getMethod().invoke(_serviceBean, invocation.getArgs());
                 } finally {
@@ -168,6 +194,9 @@ public class ServiceProxyHandler extends BaseServiceHandler implements ServiceHa
                 if (exchangePattern == ExchangePattern.IN_OUT) {
                     Message message = exchange.createMessage();
                     message.setContent(responseObject);
+                    if (_beanBagInjected) {
+                        mergeFromBeanBagOutMessage(beanBag, message);
+                    }
                     exchange.send(message);
                 }
             } catch (Exception ex) {
@@ -194,12 +223,33 @@ public class ServiceProxyHandler extends BaseServiceHandler implements ServiceHa
                 }
                 throw new BeanComponentException(faultContent);
                 
+            } finally {
+                if (_beanBagInjected) {
+                    setBeanBag(null);
+                }
             }
         } else {
             throw new SwitchYardException("Unexpected error.  BeanServiceMetadata should return an Invocation instance, or throw a BeanComponentException.");
         }
     }
 
+    private void setBeanBag(BeanBagImpl beanBag) {
+        BeanBagProxy.setBeanBag(beanBag);
+        for (ClientProxyBean proxyBean : _beanDeploymentMetaData.getClientProxies()) {
+            if (_references.containsKey(proxyBean.getServiceName())) {
+                proxyBean.setBeanBag(beanBag);
+            }
+        }
+    }
+    
+    private void mergeFromBeanBagOutMessage(BeanBagImpl beanBag, Message message) {
+        Message bbMessage = beanBag.getOutMessage();
+        for (String key : bbMessage.getAttachmentMap().keySet()) {
+            message.addAttachment(key, bbMessage.getAttachment(key));
+        }
+        message.getContext().setProperties(bbMessage.getContext().getProperties(Scope.MESSAGE));
+    }
+    
     @Override
     protected void doStart() {
         // Initialise any client proxies to the started service...
