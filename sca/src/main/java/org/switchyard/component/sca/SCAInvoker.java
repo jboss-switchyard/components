@@ -143,7 +143,11 @@ public class SCAInvoker extends BaseServiceHandler {
         try {
             RemoteMessage reply = _invoker.invoke(request);
             if (isInOut(exchange) && reply != null) {
-                Message msg = exchange.getMessage().setContent(reply.getContent());
+                Message msg = exchange.createMessage();
+                msg.setContent(reply.getContent());
+                if (reply.getContext() != null) {
+                    msg.getContext().setProperties(reply.getContext().getProperties());
+                }
                 if (reply.isFault()) {
                     exchange.sendFault(msg);
                 } else {
