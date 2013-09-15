@@ -159,7 +159,7 @@ public class SwitchYardProducer extends DefaultProducer {
             try {
                 operationName = selector.selectOperation(new CamelBindingData(exchange.getIn())).getLocalPart();
             } catch (Exception e) {
-                LOG.error("Cannot lookup operation using custom operation selector. Returning empty name", e);
+                SwitchYardCamelComponentLogger.ROOT_LOGGER.cannotLookupOperation(e);
             }
         }
         return operationName;
@@ -176,7 +176,7 @@ public class SwitchYardProducer extends DefaultProducer {
         final QName serviceName = composeSwitchYardServiceName(namespace, targetUri, componentName);
         final ServiceReference serviceRef = domain.getServiceReference(serviceName);
         if (serviceRef == null) {
-            throw new NullPointerException("No ServiceReference was found for uri [" + targetUri + "]");
+            throw SwitchYardCamelComponentMessages.MESSAGES.noServiceReferenceFoundForURI(targetUri);
         }
         return serviceRef;
     }
@@ -221,7 +221,7 @@ public class SwitchYardProducer extends DefaultProducer {
         // Still haven't found it?  Houston, we have a problem.
         if (operationName == null) {
             final StringBuilder msg = new StringBuilder();
-            msg.append("Unable to determine operation as the target service contains more than one operation");
+            msg.append(SwitchYardCamelComponentMessages.MESSAGES.unableToDetermineOperation());
             msg.append(serviceRef.getInterface().getOperations());
             throw new SwitchYardException(msg.toString());
         }
