@@ -30,6 +30,7 @@ import javax.transaction.UserTransaction;
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.switchyard.HandlerException;
+import org.switchyard.component.bpm.BPMMessages;
 
 /**
  * AS7TransactionHelper.
@@ -71,9 +72,9 @@ public class AS7TransactionHelper {
                     _isInitiator = true;
                 }
             } catch (SystemException se) {
-                throw new HandlerException("UserTransaction begin failed", se);
+                throw BPMMessages.MESSAGES.userTransactionBeginFailedSystem(se);
             } catch (NotSupportedException nse) {
-                throw new HandlerException("UserTransaction begin failed", nse);
+                throw BPMMessages.MESSAGES.userTransactionBeginFailedNSE(nse);
             }
         }
     }
@@ -87,13 +88,13 @@ public class AS7TransactionHelper {
             try {
                 _userTx.commit();
             } catch (SystemException se) {
-                throw new HandlerException("UserTransaction commit failed", se);
+                throw BPMMessages.MESSAGES.userTransactionCommitFailedSystem(se);
             } catch (HeuristicRollbackException hre) {
-                throw new HandlerException("UserTransaction commit failed", hre);
+                throw BPMMessages.MESSAGES.userTransactionCommitFailedRollback(hre);
             } catch (HeuristicMixedException hme) {
-                throw new HandlerException("UserTransaction commit failed", hme);
+                throw BPMMessages.MESSAGES.userTransactionCommitFailedMixed(hme);
             } catch (RollbackException re) {
-                throw new HandlerException("UserTransaction commit failed", re);
+                throw BPMMessages.MESSAGES.userTransactionCommitFailed(re);
             }
         }
     }
@@ -107,13 +108,13 @@ public class AS7TransactionHelper {
             try {
                 _userTx.rollback();
             } catch (SystemException se) {
-                throw new HandlerException("UserTransaction rollback failed", se);
+                throw BPMMessages.MESSAGES.userTransactionRollbackFailed(se);
             }
         } else if (_userTx != null) {
             try {
                 _userTx.setRollbackOnly();
             } catch (SystemException se) {
-                throw new HandlerException("UserTransaction setRollbackOnly failed", se);
+                throw BPMMessages.MESSAGES.userTransactionSetRollbackOnlyFailed(se);
             }
         }
     }

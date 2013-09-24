@@ -22,7 +22,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.process.WorkItem;
@@ -32,6 +32,7 @@ import org.switchyard.HandlerException;
 import org.switchyard.SwitchYardException;
 import org.switchyard.common.lang.Strings;
 import org.switchyard.common.xml.XMLHelper;
+import org.switchyard.component.bpm.BPMLogger;
 import org.switchyard.component.common.knowledge.service.SwitchYardServiceInvoker;
 import org.switchyard.component.common.knowledge.service.SwitchYardServiceRequest;
 import org.switchyard.component.common.knowledge.service.SwitchYardServiceResponse;
@@ -182,7 +183,7 @@ public class SwitchYardServiceTaskHandler implements WorkItemHandler {
             } else {
                 emsg = String.format("Fault encountered [%s]: %s", fault.getClass().getName(), fault);
             }
-            LOGGER.error(emsg);
+            BPMLogger.ROOT_LOGGER.formattedFaultMessage(emsg);
             String faultName = getFaultName(parameters);
             if (faultName != null) {
                 results.put(faultName, fault);
@@ -288,7 +289,7 @@ public class SwitchYardServiceTaskHandler implements WorkItemHandler {
         try {
             faultAction = FaultAction.valueOf(fa.toUpperCase());
         } catch (Throwable t) {
-            LOGGER.warn(String.format("Unknown %s: %s (%s). Defaulting to %s.", FAULT_ACTION, fa, t.getMessage(), FaultAction.DEFAULT.name()));
+            BPMLogger.ROOT_LOGGER.unknownDefaultingTo(FAULT_ACTION, fa, t.getMessage(), FaultAction.DEFAULT.name());
             faultAction = FaultAction.DEFAULT;
         }
         return faultAction;
