@@ -17,8 +17,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.switchyard.common.type.Classes;
+import org.switchyard.component.common.CommonCommonLogger;
 import org.switchyard.config.model.composer.MessageComposerModel;
 
 /**
@@ -76,7 +77,7 @@ public abstract class MessageComposerFactory<D extends BindingData> {
             try {
                 messageComposer = custom.newInstance();
             } catch (Exception e) {
-                LOGGER.error("Could not instantiate MessageComposer: " + custom.getClass().getName() + " - " + e.getMessage());
+                CommonCommonLogger.ROOT_LOGGER.couldNotInstantiateMessageComposer(custom.getClass().getName(), e.getMessage());
             }
         }
         if (messageComposer == null) {
