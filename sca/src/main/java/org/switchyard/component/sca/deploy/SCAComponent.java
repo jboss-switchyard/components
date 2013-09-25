@@ -15,11 +15,12 @@ package org.switchyard.component.sca.deploy;
 
 import java.util.ServiceLoader;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.switchyard.ServiceDomain;
 import org.switchyard.component.sca.RemoteEndpointPublisher;
 import org.switchyard.deploy.Activator;
 import org.switchyard.deploy.BaseComponent;
+import org.switchyard.component.sca.SCALogger;
 
 /**
  * The "remote" component used in SwitchYard for providing and consuming clustered endpoints.
@@ -40,7 +41,7 @@ public class SCAComponent extends BaseComponent {
             _endpointPublisher = ServiceLoader.load(RemoteEndpointPublisher.class).iterator().next();
             _endpointPublisher.init(CONTEXT_PATH);
         } catch (Exception ex) {
-            _log.warn("Failed to initialize remote endpoint publisher", ex);
+            SCALogger.ROOT_LOGGER.failedToInitializeRemoteEndpointPublisher(ex);
         }
     }
     
@@ -57,7 +58,7 @@ public class SCAComponent extends BaseComponent {
         try {
             _endpointPublisher.stop();
         } catch (Exception ex) {
-            _log.warn("Failed to destroy remote endpoint publisher", ex);
+            SCALogger.ROOT_LOGGER.failedToDestroyRemoteEndpointPublisher(ex);
         }
     }
 }
