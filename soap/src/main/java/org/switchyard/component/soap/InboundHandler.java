@@ -31,7 +31,7 @@ import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.soap.MTOMFeature;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.switchyard.Exchange;
 import org.switchyard.ExchangeState;
 import org.switchyard.HandlerException;
@@ -158,19 +158,19 @@ public class InboundHandler extends BaseServiceHandler {
         if (_endpoint != null) {
             _endpoint.stop();
         }
-        LOGGER.info("WebService " + _config.getPort() + " stopped.");
+        SOAPLogger.ROOT_LOGGER.webService(_config.getPort().toString());
     }
 
     @Override
     public void handleFault(Exchange exchange) {
         // TODO: Why is this class an ExchangeHandler?  See SOAPActivator
-        throw new IllegalStateException("Unexpected");
+        throw SOAPMessages.MESSAGES.unexpected();
     }
 
     @Override
     public void handleMessage(Exchange exchange) throws HandlerException {
         // TODO: Why is this class an ExchangeHandler?  See SOAPActivator
-        throw new IllegalStateException("Unexpected");
+        throw SOAPMessages.MESSAGES.unexpected();
     }
 
     /**
@@ -272,7 +272,7 @@ public class InboundHandler extends BaseServiceHandler {
                 }
                 
                 if (SOAPUtil.getFactory(_bindingId) == null) {
-                    throw new SOAPException("Failed to instantiate SOAP Message Factory");
+                    throw SOAPMessages.MESSAGES.failedToInstantiateSOAPMessageFactory();
                 }
                 SOAPMessage soapResponse;
                 try {
@@ -315,8 +315,7 @@ public class InboundHandler extends BaseServiceHandler {
         List<Part> parts = operation.getInput().getMessage().getOrderedParts(null);
 
         if (parts.isEmpty()) {
-            throw new SOAPException("Invalid input SOAP payload for service operation '" + operation.getName() + "' (service '" + _service.getName()
-                                                                              + "').  No such Part '" + actualLN + "'.");
+            throw SOAPMessages.MESSAGES.invalidInputSOAPPayloadForServiceOperation(operation.getName(), _service.getName().toString(), actualLN);
         }
 
         QName expectedPayloadType = null;
@@ -339,11 +338,9 @@ public class InboundHandler extends BaseServiceHandler {
         }
 
         if (expectedNS != null && !expectedNS.equals(actualNS)) {
-            throw new SOAPException("Invalid input SOAP payload namespace for service operation '" + operation.getName() + "' (service '" + _service.getName()
-                                        + "').  Port defines operation namespace as '" + expectedNS + "'.  Actual namespace on input SOAP message '" + actualNS + "'.");
+            throw SOAPMessages.MESSAGES.invalidInputSOAPPayloadNamespaceForServiceOperation(operation.getName(), _service.getName().toString(), expectedNS, actualNS);
         } else if (expectedLN != null && !expectedLN.equals(actualLN)) {
-            throw new SOAPException("Invalid input SOAP payload localNamePart for service operation '" + operation.getName() + "' (service '" + _service.getName()
-                    + "').  Port defines operation localNamePart as '" + expectedLN + "'.  Actual localNamePart on input SOAP message '" + actualLN + "'.");
+            throw SOAPMessages.MESSAGES.invalidInputSOAPPayloadLocalNamePartForServiceOperation(operation.getName(), _service.getName().toString(), expectedLN, actualLN);
         }
     }
 
