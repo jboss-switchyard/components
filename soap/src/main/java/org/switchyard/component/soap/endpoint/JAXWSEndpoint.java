@@ -20,9 +20,10 @@ import java.lang.reflect.Method;
 import javax.xml.ws.Endpoint;
 import javax.xml.ws.WebServiceFeature;
 
-import org.apache.log4j.Logger;
 import org.switchyard.common.type.Classes;
+import org.switchyard.component.soap.SOAPLogger;
 import org.switchyard.component.soap.InboundHandler;
+import org.apache.log4j.Logger;
 
 /**
  * Wrapper for JAX-WS endpoints.
@@ -79,7 +80,7 @@ public class JAXWSEndpoint implements WSEndpoint {
      */
     public void publish(String publishUrl) {
         _publishUrl = publishUrl;
-       LOGGER.info("Publishing WebService at " + _publishUrl);
+       SOAPLogger.ROOT_LOGGER.publishingWebServiceAt(_publishUrl);
         _endpoint.publish(_publishUrl);
     }
 
@@ -87,7 +88,7 @@ public class JAXWSEndpoint implements WSEndpoint {
      * {@inheritDoc}
      */
     public void stop() {
-        LOGGER.info("Stopping WebService at " + _publishUrl);
+        SOAPLogger.ROOT_LOGGER.stoppingWebServiceAt(_publishUrl);
         _endpoint.stop();
     }
 }
