@@ -18,7 +18,7 @@ import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.switchyard.Exchange;
 import org.switchyard.HandlerException;
 import org.switchyard.Message;
@@ -110,7 +110,7 @@ public class InboundHandler extends BaseServiceHandler {
         try {
             message = _messageComposer.compose(restMessageRequest, exchange);
         } catch (Exception e) {
-            LOGGER.error("Unexpected exception composing inbound Message", e);
+            RestEasyLogger.ROOT_LOGGER.unexpectedExceptionComposingInboundMessage(e);
             throw new WebApplicationException(e);
         }
         if (oneWay) {
@@ -123,8 +123,8 @@ public class InboundHandler extends BaseServiceHandler {
             } catch (WebApplicationException wae) {
                 throw wae;
             } catch (Exception e) {
-                LOGGER.error("Unexpected exception composing outbound REST response", e);
-                throw new WebApplicationException(e);
+                RestEasyLogger.ROOT_LOGGER.unexpectedExceptionComposingOutboundRESTResponse(e);
+                throw new WebApplicationException(e);            
             }
         }
         return output;
@@ -140,11 +140,11 @@ public class InboundHandler extends BaseServiceHandler {
 
     @Override
     public void handleFault(Exchange exchange) {
-        throw new IllegalStateException("Unexpected");
+        throw RestEasyMessages.MESSAGES.unexpected();
     }
 
     @Override
     public void handleMessage(Exchange exchange) throws HandlerException {
-        throw new IllegalStateException("Unexpected");
+        throw RestEasyMessages.MESSAGES.unexpected();
     }
 }
