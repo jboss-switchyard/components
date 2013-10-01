@@ -41,6 +41,10 @@
         <module>camel-test</module>
     </modules>
     <dependencies>
+	<dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
         <!-- external dependencies -->
         <dependency>
             <groupId>junit</groupId>
