@@ -24,6 +24,7 @@ import org.switchyard.ServiceDomain;
 import org.switchyard.ServiceReference;
 import org.switchyard.component.common.composer.MessageComposer;
 import org.switchyard.component.common.selector.OperationSelectorFactory;
+import org.switchyard.component.jca.JCAMessages;
 import org.switchyard.component.jca.composer.JCABindingData;
 import org.switchyard.component.jca.composer.JCAComposition;
 import org.switchyard.component.jca.config.model.JCABindingModel;
@@ -181,7 +182,7 @@ public abstract class AbstractInflowEndpoint {
     
     protected Exchange createExchange(String operation, ExchangeHandler handler) {
         if (_serviceRef == null) {
-            throw new IllegalStateException("initialize() must be called before exchange.");
+            throw JCAMessages.MESSAGES.initializeMustBeCalledBeforeExchange();
         }
         
         if (operation == null) {
