@@ -16,7 +16,7 @@ package org.switchyard.component.resteasy.resource;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 
 /**
