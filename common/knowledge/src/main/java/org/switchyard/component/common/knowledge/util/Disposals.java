@@ -17,11 +17,12 @@ import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.agent.KnowledgeAgent;
+import org.switchyard.component.common.knowledge.CommonKnowledgeLogger;
 import org.switchyard.component.common.knowledge.session.KnowledgeDisposal;
 
 /**
@@ -30,8 +31,6 @@ import org.switchyard.component.common.knowledge.session.KnowledgeDisposal;
  * @author David Ward &lt;<a href="mailto:dward@jboss.org">dward@jboss.org</a>&gt; &copy; 2012 Red Hat Inc.
  */
 public final class Disposals {
-
-    private static final Logger LOGGER = Logger.getLogger(Disposals.class);
 
     /**
      * Creates a new EntityManagetFactory disposal.
@@ -47,7 +46,7 @@ public final class Disposals {
                         entityManagerFactory.close();
                     }
                 } catch (Throwable t) {
-                    LOGGER.warn("problem closing EntityManagerFactory: " + t.getMessage());
+                    CommonKnowledgeLogger.ROOT_LOGGER.problemClosingEntityManagerFactory(t.getMessage());
                 }
             }
         };
@@ -69,7 +68,7 @@ public final class Disposals {
                                 kieRuntimeLogger.close();
                             }
                         } catch (Throwable t) {
-                            LOGGER.warn("problem closing KieRuntimeLogger: " + t.getMessage());
+                            CommonKnowledgeLogger.ROOT_LOGGER.problemClosingKieRuntimeLogger(t.getMessage());
                         }
                     }
                     kieRuntimeLoggers.clear();
@@ -92,7 +91,7 @@ public final class Disposals {
                         kieScanner.stop();
                     }
                 } catch (Throwable t) {
-                    LOGGER.warn("problem stoppping KieScanner: " + t.getMessage());
+                    CommonKnowledgeLogger.ROOT_LOGGER.problemStopppingKieScanner(t.getMessage());
                 }
             }
         };
@@ -116,7 +115,7 @@ public final class Disposals {
                         }
                     }
                 } catch (Throwable t) {
-                    LOGGER.warn("problem disposing KieSession: " + t.getMessage());
+                    CommonKnowledgeLogger.ROOT_LOGGER.problemDisposingKieSession(t.getMessage());
                 }
             }
         };
@@ -136,7 +135,7 @@ public final class Disposals {
                         knowledgeAgent.dispose();
                     }
                 } catch (Throwable t) {
-                    LOGGER.warn("problem disposing KnowledgeAgent: " + t.getMessage());
+                    CommonKnowledgeLogger.ROOT_LOGGER.problemDisposingKnowledgeAgent(t.getMessage());
                 }
             }
         };
