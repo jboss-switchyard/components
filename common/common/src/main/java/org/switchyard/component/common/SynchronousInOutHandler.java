@@ -94,7 +94,7 @@ public class SynchronousInOutHandler implements ExchangeHandler {
     @Override
     public synchronized void handleMessage(Exchange exchange) throws HandlerException {
         if (_responseQueue == null) {
-            LOGGER.debug("OUT Exchange arrived after timeout has elapsed.");
+            LOGGER.warn("OUT Exchange arrived after timeout has elapsed.");
         } else {
             try {
                 _responseQueue.put(exchange);
@@ -107,7 +107,7 @@ public class SynchronousInOutHandler implements ExchangeHandler {
     @Override
     public synchronized void handleFault(Exchange exchange) {
         if (_responseQueue == null) {
-            LOGGER.debug("OUT Exchange arrived after timeout has elapsed.");
+            LOGGER.warn("OUT Exchange arrived after timeout has elapsed.");
         } else {
             try {
                 _responseQueue.put(exchange);
