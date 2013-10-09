@@ -67,6 +67,7 @@ public class V1CamelQuartzBindingModel extends V1BaseCamelBindingModel
 
     @Override
     public String getTimerName() {
+        // The underbar character is not a valid character 
         return getConfig(NAME);
     }
 
@@ -130,7 +131,9 @@ public class V1CamelQuartzBindingModel extends V1BaseCamelBindingModel
         Configuration modelConfiguration = getModelConfiguration();
         List<Configuration> children = modelConfiguration.getChildren();
 
-        String baseUri = QUARTZ + "://" + getTimerName();
+        // SWITCHYARD-1760 : eliminate underscores in the TimerName part of
+        // baseUri to prevent parsing mixups in QuartzComponent
+        String baseUri = QUARTZ + "://" + getTimerName().replaceAll("_", "-");
 
         QueryString queryStr = new QueryString();
         traverseConfiguration(children, queryStr, NAME);
