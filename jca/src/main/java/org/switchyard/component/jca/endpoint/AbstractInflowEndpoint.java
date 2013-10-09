@@ -24,6 +24,7 @@ import org.switchyard.ServiceDomain;
 import org.switchyard.ServiceReference;
 import org.switchyard.component.common.composer.MessageComposer;
 import org.switchyard.component.common.selector.OperationSelectorFactory;
+import org.switchyard.component.jca.JCAMessages;
 import org.switchyard.component.jca.composer.JCABindingData;
 import org.switchyard.component.jca.composer.JCAComposition;
 import org.switchyard.component.jca.config.model.JCABindingModel;
@@ -181,16 +182,16 @@ public abstract class AbstractInflowEndpoint {
     
     protected Exchange createExchange(String operation, ExchangeHandler handler) {
         if (_serviceRef == null) {
-            throw new IllegalStateException("initialize() must be called before exchange.");
+            throw JCAMessages.MESSAGES.initializeMustBeCalledBeforeExchange();
         }
         
         if (operation == null) {
             final Set<ServiceOperation> operations = _serviceRef.getInterface().getOperations();
             if (operations.size() != 1) {
                 final StringBuilder msg = new StringBuilder();
-                msg.append("No operationSelector was configured for the JCA Component and the Service Interface ");
-                msg.append("contains more than one operation: ").append(operations);
-                msg.append("Please add an operationSelector element.");
+                msg.append(JCAMessages.MESSAGES.noOperationSelectorConfigured());
+                msg.append(operations);
+                msg.append(JCAMessages.MESSAGES.pleaseAddOperationSelector());
                 throw new SwitchYardException(msg.toString());
             }
             final ServiceOperation serviceOperation = operations.iterator().next();
