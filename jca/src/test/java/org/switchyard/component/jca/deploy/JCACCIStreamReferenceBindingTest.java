@@ -22,7 +22,6 @@ import javax.resource.cci.InteractionSpec;
 import javax.resource.cci.Record;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.switchyard.component.jca.processor.cci.StreamableRecord;
@@ -45,7 +44,6 @@ import org.switchyard.test.SwitchYardTestCaseConfig;
  * @author Antti Laisi
  *
  */
-@Ignore
 @RunWith(SwitchYardRunner.class)
 @SwitchYardTestCaseConfig(config = "switchyard-outbound-cci-stream-test.xml", mixins = {JCAMixIn.class, CDIMixIn.class})
 public class JCACCIStreamReferenceBindingTest {

@@ -17,7 +17,6 @@ import javax.jms.MessageProducer;
 import javax.jms.TextMessage;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.switchyard.Context;
@@ -42,7 +41,6 @@ import org.switchyard.test.SwitchYardTestKit;
  * @author <a href="mailto:tm.igarashi@gmail.com">Tomohisa Igarashi</a>
  *
  */
-@Ignore
 @RunWith(SwitchYardRunner.class)
 @SwitchYardTestCaseConfig(config = "switchyard-inbound-jms-test.xml", mixins = {JCAMixIn.class, HornetQMixIn.class, CDIMixIn.class})
 public class JCAJMSServiceBindingTest  {
