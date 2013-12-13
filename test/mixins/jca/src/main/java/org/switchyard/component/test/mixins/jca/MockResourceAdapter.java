@@ -58,7 +58,12 @@ public class MockResourceAdapter implements ResourceAdapter {
     @Override
     public XAResource[] getXAResources(ActivationSpec[] arg0)
             throws ResourceException {
-        _logger.debug("call getXAResources(" + arg0 + ")");
+        StringBuffer buffer = new StringBuffer();
+        for (ActivationSpec as : arg0) {
+            buffer.append("[" + as.toString() + "] ");
+        }
+        buffer.trimToSize();
+        _logger.debug("call getXAResources(" + buffer.toString() + ")");
         return null;
     }
     

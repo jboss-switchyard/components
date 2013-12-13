@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
  */
 public class MockConnectionManager implements ConnectionManager {
 
-    private Logger _logger = Logger.getLogger(MockConnectionManager.class);
+    private transient Logger _logger = Logger.getLogger(MockConnectionManager.class);
     private static final long serialVersionUID = 1L;
     
     @Override

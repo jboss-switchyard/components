@@ -14,6 +14,7 @@
 
 package org.switchyard.component.soap.composer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -81,7 +82,6 @@ public class SOAPMessageComposer extends BaseMessageComposer<SOAPBindingData> {
     public Message compose(SOAPBindingData source, Exchange exchange) throws Exception {
         final SOAPMessage soapMessage = source.getSOAPMessage();
         final Message message = exchange.createMessage();
-        final Boolean input = exchange.getPhase() == null;
         getContextMapper().mapFrom(source, exchange.getContext(message));
 
         final SOAPEnvelope envelope = soapMessage.getSOAPPart().getEnvelope();
@@ -183,13 +183,20 @@ public class SOAPMessageComposer extends BaseMessageComposer<SOAPBindingData> {
                 bodyNode = SOAPUtil.expandXop((Element)bodyNode, attachments);
             }
             message.setContent(new DOMSource(bodyNode));
-        } catch (Exception ex) {
-            if (ex instanceof SOAPException) {
-                throw (SOAPException) ex;
-            }
-            throw new SOAPException(ex);
+        } catch (SOAPException ex) {
+            throw (SOAPException) ex;
+        } catch (IOException ioe) {
+            throw new SOAPException(ioe);
+        } catch (UnsupportedOperationException uoe) {
+            throw new SOAPException(uoe);
+        } catch (ClassCastException cce) {
+            throw new SOAPException(cce);
+        } catch (NullPointerException npe) {
+            throw new SOAPException(npe);
+        } catch (IllegalArgumentException iae) {
+            throw new SOAPException(iae);
         }
-
+ 
         return message;
     }
 
