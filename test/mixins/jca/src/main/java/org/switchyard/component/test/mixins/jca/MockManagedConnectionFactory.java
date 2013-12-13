@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
  */
 public class MockManagedConnectionFactory implements ManagedConnectionFactory {
 
-    private Logger _logger = Logger.getLogger(MockManagedConnectionFactory.class);
+    private transient Logger _logger = Logger.getLogger(MockManagedConnectionFactory.class);
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -77,11 +77,14 @@ public class MockManagedConnectionFactory implements ManagedConnectionFactory {
     
     @Override
     public boolean equals(Object obj) {
-        return obj.equals(this);
+        if (obj != null) {
+            return obj.equals(this);
+        } 
+        return false;
     }
     
     @Override
     public int hashCode() {
-        return this.hashCode();
+        return super.hashCode();
     }
 }
