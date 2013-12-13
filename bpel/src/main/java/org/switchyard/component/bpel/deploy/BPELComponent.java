@@ -34,7 +34,7 @@ public class BPELComponent extends BaseComponent {
 
     private static final Logger LOG = Logger.getLogger(BPELComponent.class);
     
-    private static BPELEngine _engine=null;
+    private static BPELEngine _engine = null;
     private static java.util.Properties _config=null;
     private static RiftsawServiceLocator _locator=new RiftsawServiceLocator();
     private static boolean _initialized=false;
@@ -145,15 +145,13 @@ public class BPELComponent extends BaseComponent {
         super.destroy();
 
         BPELLogger.ROOT_LOGGER.destroyBPELComponent();
-        
-        if (_engine != null) {
-            try {
+        try {
+            synchronized (_engine) {
                 _engine.close();
                 _engine = null;
-            } catch (Exception e) {
-                BPELLogger.ROOT_LOGGER.failedToCloseBPELEngine(e);
             }
-            
+        } catch (Exception e) {
+            BPELLogger.ROOT_LOGGER.failedToCloseBPELEngine(e);
         }
     }
     
