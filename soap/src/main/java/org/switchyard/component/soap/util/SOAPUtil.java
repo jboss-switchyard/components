@@ -277,19 +277,21 @@ public final class SOAPUtil {
      * @throws SOAPException If the envelope could not be read
      */
     public static SOAPEnvelope addReplaceHeader(SOAPEnvelope soapEnvelope, Context context, String property) throws SOAPException {
-        Node header = (Node)context.getPropertyValue(property);
-        if (header == null) {
-            // When a ReplyTo header was added in Camel messgae header JAX-WS did not generate a MessageID
-            // and ReplyTo headers. So allow lower case replyto header to be set in Camel
-            header = (Node)context.getPropertyValue(property.toLowerCase());
-        }
-        if (header != null) {
-            NodeList headers = soapEnvelope.getHeader().getElementsByTagNameNS(header.getNamespaceURI(), header.getLocalName());
-            if (headers.getLength() == 1) {
-                ((javax.xml.soap.Node)headers.item(0)).detachNode();
+        synchronized (context) {
+            Node header = (Node)context.getPropertyValue(property);
+            if (header == null) {
+                // When a ReplyTo header was added in Camel messgae header JAX-WS did not generate a MessageID
+                // and ReplyTo headers. So allow lower case replyto header to be set in Camel
+                header = (Node)context.getPropertyValue(property.toLowerCase());
             }
-            Node domNode = soapEnvelope.getHeader().getOwnerDocument().importNode((Node)header, true);
-            soapEnvelope.getHeader().appendChild(domNode);
+            if (header != null) {
+                NodeList headers = soapEnvelope.getHeader().getElementsByTagNameNS(header.getNamespaceURI(), header.getLocalName());
+                if (headers.getLength() == 1) {
+                    ((javax.xml.soap.Node)headers.item(0)).detachNode();
+                }
+                Node domNode = soapEnvelope.getHeader().getOwnerDocument().importNode((Node)header, true);
+                soapEnvelope.getHeader().appendChild(domNode);
+            }
         }
         return soapEnvelope;
     }

@@ -108,7 +108,9 @@ public class SOAPContextMapper extends BaseRegexContextMapper<SOAPBindingData> {
                         value = new ConfigurationPuller().pull(soapHeader);
                         break;
                     case DOM:
-                        value = soapHeader;
+                        Node node = soapHeader.cloneNode(true);
+                        ((javax.xml.soap.Node)node).detachNode();
+                        value = node;
                         break;
                     case VALUE:
                         value = soapHeader.getValue();
