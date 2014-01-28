@@ -16,6 +16,7 @@ package org.switchyard.component.bean;
 
 import org.switchyard.Exchange;
 import org.switchyard.Message;
+import org.switchyard.common.camel.PrimitiveUnboxingUtil;
 
 import java.lang.reflect.Method;
 
@@ -110,7 +111,8 @@ public class Invocation {
             if (_args[0] != null) {
                 Class<?> argType = _method.getParameterTypes()[0];
 
-                if (!argType.isInstance(_args[0])) {
+                if ((!argType.isInstance(_args[0]))
+                    && (!PrimitiveUnboxingUtil.isUnboxingException(argType, _args[0]))) {
                     throw BeanMessages.MESSAGES.beanServiceOperationRequiresAPayloadTypeOf(operationName(), argType.getName(), _args[0].getClass().getName());
                 }
             }
