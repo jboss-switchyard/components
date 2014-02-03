@@ -185,11 +185,7 @@ public class SwitchYardProducer extends DefaultProducer {
         String opName = lookupOperationNameFor(camelExchange, serviceRef);
         CamelResponseHandler handler = new CamelResponseHandler(camelExchange, serviceRef, messageComposer);
 
-        if (opName != null) {
-            return serviceRef.createExchange(opName, handler);
-        } else {
-            return serviceRef.createExchange(handler);
-        }
+        return serviceRef.createExchange(opName, handler);
     }
 
     private String lookupOperationNameFor(final org.apache.camel.Exchange camelExchange, final ServiceReference serviceRef) {
