@@ -15,6 +15,7 @@
 package org.switchyard.component.http.endpoint;
 
 import org.jboss.com.sun.net.httpserver.HttpContext;
+import org.switchyard.component.common.Endpoint;
 
 /**
  * A standalone HTTP endpoint.
@@ -33,6 +34,12 @@ public class StandaloneEndpoint implements Endpoint {
     public StandaloneEndpoint(final HttpContext context) {
         _httpContext = context;
         _contextCount++;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void start() {
     }
 
     /**
