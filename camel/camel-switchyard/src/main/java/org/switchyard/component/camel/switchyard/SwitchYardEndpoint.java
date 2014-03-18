@@ -11,12 +11,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.switchyard.component.camel;
+package org.switchyard.component.camel.switchyard;
 
 import org.apache.camel.Consumer;
 import org.apache.camel.Processor;
 import org.apache.camel.Producer;
 import org.apache.camel.impl.DefaultEndpoint;
+import org.switchyard.ServiceDomain;
+import org.switchyard.common.camel.SwitchYardCamelContext;
 import org.switchyard.component.camel.common.composer.BindingDataCreatorResolver;
 import org.switchyard.component.camel.common.composer.CamelBindingData;
 import org.switchyard.component.camel.common.composer.CamelComposition;
@@ -124,4 +126,12 @@ public class SwitchYardEndpoint extends DefaultEndpoint {
         return ((SwitchYardComponent) getComponent()).getBindingDataCreatorResolver();
     }
 
+    /**
+     * Returns the ServiceDomain used for this endpoint.
+     * 
+     * @return ServiceDomain used for this endpoint.
+     */
+    public ServiceDomain getServiceDomain() {
+        return ((SwitchYardCamelContext) getCamelContext()).getServiceDomain();
+    }
 }
