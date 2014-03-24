@@ -56,7 +56,10 @@ public class RESTEasyMessageComposer extends BaseMessageComposer<RESTEasyBinding
     public RESTEasyBindingData decompose(Exchange exchange, RESTEasyBindingData target) throws Exception {
         Message sourceMessage = exchange.getMessage();
         Object content = sourceMessage.getContent();
-        target.setOperationName(exchange.getContract().getProviderOperation().getName());
+        if (exchange.getContract().getProviderOperation() != null) {
+            target.setOperationName(exchange.getContract().getProviderOperation().getName());
+        }
+        
         if (exchange.getState().equals(ExchangeState.FAULT)) {
             if (content instanceof WebApplicationException) {
                 throw (WebApplicationException)content;
