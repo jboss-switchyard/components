@@ -15,6 +15,7 @@ package org.switchyard.component.sca;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -324,6 +325,10 @@ public class SCAInvokerTest {
             public String getTarget() {
                 return "test-target";
             }
+            @Override
+            public String getLoadBalance() {
+            	return "RoundRobinStrategy";
+            }
             public CompositeReferenceModel getReference() {
                 return new V1CompositeReferenceModel();
             };
@@ -331,16 +336,38 @@ public class SCAInvokerTest {
         
         // Mock the invoker so that we don't need an actual remote endpoint
         final LinkedList<RemoteMessage> msgs = new LinkedList<RemoteMessage>();
-        ClusteredInvoker clInovker = new ClusteredInvoker(null) {
+        
+        SCAInvoker scaInvoker = new SCAInvoker(config, new RemoteRegistry() {
+			@Override
+			public void removeEndpoint(RemoteEndpoint endpoint) {
+			}
+			
+			@Override
+			public boolean hasLocalEndpoint(QName serviceName) {
+				return false;
+			}
+			
+			@Override
+			public RemoteEndpoint getLocalEndpoint(QName serviceName) {
+				return null;
+			}
+			
+			@Override
+			public List<RemoteEndpoint> getEndpoints(QName serviceName) {
+				return null;
+			}
+			
+			@Override
+			public void addEndpoint(RemoteEndpoint endpoint) {
+			}
+		}){
             @Override
             public RemoteMessage invoke(RemoteMessage request) throws IOException {
                 msgs.push(request);
                 return null;
             }
         };
-        
-        SCAInvoker scaInvoker = new SCAInvoker(config);
-        scaInvoker.setInvoker(clInovker);
+//        scaInvoker.setInvoker(clInovker);
         scaInvoker.start();
         
         // Verify that exchange is mapped to remote message correctly
