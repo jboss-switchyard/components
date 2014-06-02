@@ -417,37 +417,28 @@ public final class SOAPUtil {
             pw.close();
             LOGGER.debug(sw.toString());
         }
-        if (th instanceof SOAPFaultException) {
-            // Copy the Fault from the exception
-            SOAPFault exFault = ((SOAPFaultException) th).getFault();
-            SOAPFault fault = faultMsg.getSOAPBody().addFault(exFault.getFaultCodeAsQName(), exFault.getFaultString());
-            fault.addNamespaceDeclaration(fault.getElementQName().getPrefix(), faultQname.getNamespaceURI());
-            fault.setFaultActor(exFault.getFaultActor());
-            if (exFault.hasDetail()) {
-                Detail exDetail = exFault.getDetail();
-                Detail detail = fault.addDetail();
-                for (Iterator<DetailEntry> entries = exDetail.getDetailEntries(); entries.hasNext();) {
-                    Node entryImport = detail.getOwnerDocument().importNode(entries.next(), true);
-                    detail.appendChild(entryImport);
-                }
-            }
-        } else {
-            if (RETURN_STACK_TRACES) {
-                final StringWriter sw = new StringWriter();
-                final PrintWriter pw = new PrintWriter(sw);
-                th.printStackTrace(pw);
-                pw.flush();
-                pw.close();
-                faultMsg.getSOAPBody().addFault(faultQname, sw.toString());
-            } else {
-                String message = th.getMessage();
-                if (message == null) {
-                    message = th.toString();
-                }
-                faultMsg.getSOAPBody().addFault(faultQname, message);
-            }
-        }
-        return faultMsg;
+		SOAPBody soapBody = faultMsg.getSOAPBody();
+		if (th instanceof SOAPFaultException) {
+			// Copy the Fault from the exception
+			SOAPFault exFault = ((SOAPFaultException) th).getFault();
+			soapBody.appendChild(soapBody.getOwnerDocument().importNode(exFault, true));
+		} else {
+			if (RETURN_STACK_TRACES) {
+				final StringWriter sw = new StringWriter();
+				final PrintWriter pw = new PrintWriter(sw);
+				th.printStackTrace(pw);
+				pw.flush();
+				pw.close();
+				soapBody.addFault(faultQname, sw.toString());
+			} else {
+				String message = th.getMessage();
+				if (message == null) {
+					message = th.toString();
+				}
+				soapBody.addFault(faultQname, message);
+			}
+		}
+		return faultMsg;
     }
 
     /**
