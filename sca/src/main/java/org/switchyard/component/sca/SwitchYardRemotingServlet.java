@@ -134,6 +134,16 @@ public class SwitchYardRemotingServlet extends HttpServlet {
             reply.setContent(syEx);
             _serializer.serialize(reply, RemoteMessage.class, response.getOutputStream());
             response.getOutputStream().flush();
+        } catch (Exception ex) {
+            if (_log.isDebugEnabled()) {
+                _log.debug("Failed to process remote invocation", ex);
+            }
+
+            RemoteMessage reply = new RemoteMessage();
+            reply.setFault(true);
+            reply.setContent(new SwitchYardException(ex));
+            _serializer.serialize(reply, RemoteMessage.class, response.getOutputStream());
+            response.getOutputStream().flush();
         } finally {
             if (transactionPropagated) {
                 bridgeOutgoingTransaction();
