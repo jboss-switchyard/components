@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.transaction.TransactionManager;
@@ -71,6 +73,7 @@ import org.switchyard.component.common.knowledge.session.KnowledgeSession;
 import org.switchyard.component.common.knowledge.util.Disposals;
 import org.switchyard.component.common.knowledge.util.Environments;
 import org.switchyard.component.common.knowledge.util.Listeners;
+import org.switchyard.config.model.property.PropertyModel;
 
 /**
  * A "bpm" implementation of a KnowledgeExchangeHandler.
@@ -80,9 +83,11 @@ import org.switchyard.component.common.knowledge.util.Listeners;
 public class BPMExchangeHandler extends KnowledgeExchangeHandler<BPMComponentImplementationModel> {
 
     private static final KnowledgeOperation DEFAULT_OPERATION = new KnowledgeOperation(BPMOperationType.START_PROCESS);
+    private static final String PERSISTENCE_JNDI_NAME = "persistenceJndiName";
 
     private final boolean _persistent;
     private final String _processId;
+    private String _persistenceJndiName;
     private BPMProcessEventListener _processEventListener;
     private UserGroupCallback _userGroupCallback;
     private CorrelationKeyFactory _correlationKeyFactory;
@@ -99,6 +104,10 @@ public class BPMExchangeHandler extends KnowledgeExchangeHandler<BPMComponentImp
         super(model, serviceDomain, serviceName);
         _persistent = model.isPersistent();
         _processId = model.getProcessId();
+        if (model.getProperties() != null) {
+            PropertyModel persistenceJndiNameProp = model.getProperties().getProperty(PERSISTENCE_JNDI_NAME);
+            _persistenceJndiName = persistenceJndiNameProp != null ? persistenceJndiNameProp.getValue() : null;
+        }
     }
 
     /**
@@ -111,10 +120,24 @@ public class BPMExchangeHandler extends KnowledgeExchangeHandler<BPMComponentImp
         _userGroupCallback = UserGroupCallbacks.newUserGroupCallback(getModel(), getLoader());
         _correlationKeyFactory = KieInternalServices.Factory.get().newCorrelationKeyFactory();
         if (_persistent) {
-            _entityManagerFactory = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
+            if (_persistenceJndiName != null) {
+                try {
+                    InitialContext cntx = new InitialContext();
+                    _entityManagerFactory = (EntityManagerFactory) cntx.lookup(_persistenceJndiName);
+                } catch (NamingException e) {
+                    _persistenceJndiName = null;
+                    _entityManagerFactory = createDefaultEntityManagerFactory();
+                }
+            } else {
+                _entityManagerFactory = createDefaultEntityManagerFactory();
+            }
         }
         _taskService = BPMTaskService.Factory.newTaskService(Environments.getEnvironment(getEnvironmentOverrides()), _entityManagerFactory, _userGroupCallback, getLoader());
         BPMTaskServiceRegistry.putTaskService(getServiceDomain().getName(), getServiceName(), _taskService);
+    }
+
+    private static EntityManagerFactory createDefaultEntityManagerFactory() {
+        return Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
     }
 
     /**
@@ -127,7 +150,9 @@ public class BPMExchangeHandler extends KnowledgeExchangeHandler<BPMComponentImp
         _userGroupCallback = null;
         _correlationKeyFactory = null;
         if (_entityManagerFactory != null) {
-            Disposals.newDisposal(_entityManagerFactory).dispose();
+            if (_persistenceJndiName == null) {
+                Disposals.newDisposal(_entityManagerFactory).dispose();
+            }
             _entityManagerFactory = null;
         }
         _taskService = null;
