@@ -30,6 +30,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.Detail;
 import javax.xml.soap.DetailEntry;
 import javax.xml.soap.MessageFactory;
+import javax.xml.soap.Name;
 import javax.xml.soap.SOAPBody;
 import javax.xml.soap.SOAPConstants;
 import javax.xml.soap.SOAPException;
@@ -420,14 +421,27 @@ public final class SOAPUtil {
         if (th instanceof SOAPFaultException) {
             // Copy the Fault from the exception
             SOAPFault exFault = ((SOAPFaultException) th).getFault();
-            SOAPFault fault = faultMsg.getSOAPBody().addFault(exFault.getFaultCodeAsQName(), exFault.getFaultString());
-            fault.addNamespaceDeclaration(fault.getElementQName().getPrefix(), faultQname.getNamespaceURI());
-            fault.setFaultActor(exFault.getFaultActor());
+            SOAPFault fault = faultMsg.getSOAPBody().addFault();
+            fault.setFaultCode(exFault.getFaultCodeAsQName());
+            fault.setFaultString(exFault.getFaultString());
+            if (SOAP11_SERVER_FAULT_TYPE.equals(faultQname)) {
+                if (exFault.getFaultActor() != null) {
+                    fault.setFaultActor(exFault.getFaultActor());
+                }
+            } else {
+                if (exFault.getFaultNode() != null) {
+                    fault.setFaultNode(exFault.getFaultNode());
+                }
+                if (exFault.getFaultRole() != null) {
+                    fault.setFaultRole(exFault.getFaultRole());
+                }
+            }
             if (exFault.hasDetail()) {
                 Detail exDetail = exFault.getDetail();
                 Detail detail = fault.addDetail();
                 for (Iterator<DetailEntry> entries = exDetail.getDetailEntries(); entries.hasNext();) {
-                    Node entryImport = detail.getOwnerDocument().importNode(entries.next(), true);
+                    Node entry = entries.next();
+                    Node entryImport = detail.getOwnerDocument().importNode(entry, true);
                     detail.appendChild(entryImport);
                 }
             }
