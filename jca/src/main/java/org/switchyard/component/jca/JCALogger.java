@@ -121,14 +121,14 @@ public interface JCALogger {
     @LogMessage(level = Level.WARN)
     @Message(id = 36811, value = "Destination '%s' was not found for '%s'. Ignoring...")
     void destinationNotFound(String destination, String purpose);
-    
+
     /**
      * failedToSendMessage method definition.
      * @param destination destination
      */
     @LogMessage(level = Level.WARN)
-    @Message(id = 36812, value = "Failed to send a message to '%s'")
-    void failedToSendMessage(String destination);
+    @Message(id = 36812, value = "Failed to send a message to '%s': %s")
+    void failedToSendMessage(String destination, String eMessage);
 
 }
 
