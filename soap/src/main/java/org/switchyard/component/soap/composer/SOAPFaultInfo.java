@@ -180,7 +180,7 @@ public class SOAPFaultInfo implements Serializable {
     /**
      * @return the Fault role
      */
-    public String geRole() {
+    public String getRole() {
         return _role;
     }
 
