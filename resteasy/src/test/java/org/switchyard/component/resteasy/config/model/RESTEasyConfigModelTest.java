@@ -14,6 +14,8 @@
 
 package org.switchyard.component.resteasy.config.model;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.switchyard.component.resteasy.config.model.NtlmAuthModel;
@@ -29,6 +31,7 @@ import org.switchyard.config.model.ModelPuller;
 public class RESTEasyConfigModelTest {
 
     private static final String REST_BINDING = "rest-binding.xml";
+    private static final String REST_BINDING_PROVIDERS = "rest-binding-providers.xml";
     private static final String REST_BINDING_REFERENCE = "rest-binding-reference.xml";
     private static final String REST_BINDING_INVALID = "rest-binding-invalid.xml";
     private static final String REST_BINDING_AUTH = "rest-binding-auth.xml";
@@ -41,6 +44,17 @@ public class RESTEasyConfigModelTest {
         Assert.assertTrue(model.isModelValid());
         model = puller.pull(REST_BINDING_INVALID, getClass());
         Assert.assertFalse(model.isModelValid());
+    }
+
+    @Test
+    public void testReadConfigBindingWithProviders() throws Exception {
+        ModelPuller<RESTEasyBindingModel> puller = new ModelPuller<RESTEasyBindingModel>();
+        RESTEasyBindingModel model = puller.pull(REST_BINDING_PROVIDERS, getClass());
+        Assert.assertTrue(model.isModelValid());
+
+        String expectedMappers = "org.switchyard.quickstarts.rest.binding.OrderExceptionMapper,"
+                + "org.switchyard.quickstarts.rest.binding.TestExceptionMapper";
+        Assert.assertEquals(expectedMappers, model.getProviders());
     }
 
     @Test

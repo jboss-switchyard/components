@@ -46,7 +46,7 @@ public class NettyResourcePublisher implements ResourcePublisher {
     /**
      * {@inheritDoc}
      */
-    public Endpoint publish(ServiceDomain domain, String context, List<Object> instances) throws Exception {
+    public Endpoint publish(ServiceDomain domain, String context, List<Object> instances, String providers) throws Exception {
         _nettyServer.stop();
         // CAUTION: Note that this publisher ignores context. Use it only for test purpose.
         for (Object instance : instances) {

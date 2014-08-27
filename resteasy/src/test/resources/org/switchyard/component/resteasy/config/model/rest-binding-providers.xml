@@ -1,0 +1,5 @@
+<rest:binding.rest xmlns:rest="urn:switchyard-component-resteasy:config:2.0">
+    <rest:interfaces>org.switchyard.quickstarts.rest.binding.OrderResource,org.switchyard.quickstarts.rest.binding.TestResource</rest:interfaces>
+    <rest:providers>org.switchyard.quickstarts.rest.binding.OrderExceptionMapper,org.switchyard.quickstarts.rest.binding.TestExceptionMapper</rest:providers>
+    <rest:contextPath>rest-binding</rest:contextPath>
+</rest:binding.rest>

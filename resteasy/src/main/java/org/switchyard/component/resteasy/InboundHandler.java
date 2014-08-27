@@ -90,7 +90,7 @@ public class InboundHandler extends BaseServiceHandler {
                 contextPath = "/";
             }
             // Add as singleton instances
-            _resource = ResourcePublisherFactory.getPublisher().publish(_domain, contextPath, instances);
+            _resource = ResourcePublisherFactory.getPublisher().publish(_domain, contextPath, instances, _config.getProviders());
             // Create and configure the RESTEasy message composer
             _messageComposer = RESTEasyComposition.getMessageComposer(_config);
         } catch (Exception e) {

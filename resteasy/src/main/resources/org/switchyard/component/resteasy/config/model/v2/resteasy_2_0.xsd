@@ -42,6 +42,11 @@
                             <documentation>A comma separated list of interfaces or abstract/empty classes with REST annotations.</documentation>
                         </annotation>
                     </element>
+                    <element name="providers" type="string" minOccurs="0" maxOccurs="1">
+                        <annotation>
+                            <documentation>A comma separated list of JAX-RS provider class names.</documentation>
+                        </annotation>
+                    </element>
                     <choice>
                         <element name="contextPath" type="string" minOccurs="0" maxOccurs="1">
                             <annotation>
