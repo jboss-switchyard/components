@@ -13,17 +13,13 @@
  - limitations under the License.
  -->
 <routes xmlns="http://camel.apache.org/schema/spring">
-    <route id="CamelTestRoute">
-        <from uri="switchyard://OrderService"/>
-        <log message="ItemId [${body}]"/>
-        <to uri="switchyard://WarehouseService?operationName=hasItem"/>
-        <to uri="switchyard://OrderService2"/>
-        <log message="Title Name [${body}]"/>
-        <log message="Route1 Properties [{{user.name}}, {{prop.domain}}, {{prop.composite}}, {{prop.component}}]"/>
+    <route id="CamelTestRoute2">
+        <from uri="switchyard://OrderService2"/>
+        <log message="Route2 Properties [{{user.name}}, {{prop.domain}}, {{prop.composite}}, {{prop.component}}]"/>
         <validate>
             <simple>${properties:prop.domain} == 'prop.domain value'
                   &amp;&amp; ${properties:prop.composite} == 'prop.composite value'
-                &amp;&amp; ${properties:prop.component} == 'prop.component value'</simple>
+                  &amp;&amp; ${properties:prop.component} == 'prop.component2 value'</simple>
         </validate>
     </route>
 </routes>

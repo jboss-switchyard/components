@@ -23,6 +23,8 @@ import javax.xml.namespace.QName;
 
 import org.apache.camel.Endpoint;
 import org.apache.camel.Processor;
+import org.apache.camel.component.properties.PropertiesComponent;
+import org.apache.camel.component.properties.PropertiesParser;
 import org.apache.camel.impl.DefaultConsumer;
 import org.apache.camel.impl.DefaultMessage;
 import org.switchyard.Exchange;
@@ -51,6 +53,7 @@ public class SwitchYardConsumer extends DefaultConsumer implements ServiceHandle
     
     private QName _componentName;
     private String _namespace;
+    private SwitchYardPropertiesParser _propertiesParser;
     
     /**
      * Used to flag an exchange as originating from a service implementation route.
@@ -76,6 +79,27 @@ public class SwitchYardConsumer extends DefaultConsumer implements ServiceHandle
 
     @Override
     public void handleMessage(final Exchange switchyardExchange) throws HandlerException {
+        PropertiesParser origPropsParser = null;
+        if (_propertiesParser != null) {
+            // Set switchyard property parser to camel PropertiesComponent
+            PropertiesComponent propsComponent = getEndpoint().getCamelContext().getComponent("properties", PropertiesComponent.class);
+            origPropsParser = propsComponent.getPropertiesParser();
+            propsComponent.setPropertiesParser(_propertiesParser);
+        }
+        
+        try {
+            org.apache.camel.Exchange camelExchange = createCamelExchange(switchyardExchange);
+            invokeCamelProcessor(camelExchange);
+            handleResponse(camelExchange, switchyardExchange);
+        } finally {
+            if (origPropsParser != null) {
+                PropertiesComponent propsComponent = getEndpoint().getCamelContext().getComponent("properties", PropertiesComponent.class);
+                propsComponent.setPropertiesParser(origPropsParser);
+            }
+        }
+    }
+    
+    private org.apache.camel.Exchange createCamelExchange(Exchange switchyardExchange) {
         org.apache.camel.Exchange camelExchange = getEndpoint().createExchange(
                 isInOut(switchyardExchange) ? org.apache.camel.ExchangePattern.InOut : org.apache.camel.ExchangePattern.InOnly);
         DefaultMessage targetMessage = ExchangeMapper.mapSwitchYardToCamel(switchyardExchange, camelExchange);
@@ -92,8 +116,10 @@ public class SwitchYardConsumer extends DefaultConsumer implements ServiceHandle
         camelExchange.setProperty(FAULT_TYPE, operation.getFaultType());
         camelExchange.setProperty(SERVICE_NAME, switchyardExchange.getProvider().getName());
         camelExchange.setIn(targetMessage);
-
-        invokeCamelProcessor(camelExchange);
+        return camelExchange;
+    }
+    
+    private void handleResponse(org.apache.camel.Exchange camelExchange, Exchange switchyardExchange) throws HandlerException {
         Exception camelException = camelExchange.getException();
         
         if (camelExchange.isFailed()) {
@@ -176,7 +202,15 @@ public class SwitchYardConsumer extends DefaultConsumer implements ServiceHandle
     public void setNamespace(String namespace) {
         _namespace = namespace;
     }
-
+    
+    /**
+     * Set the SwitchYardPropertiesParser for this camel route implementation.
+     * @param parser SwitchYardPropertiesParser
+     */
+    public void setPropertiesParser(SwitchYardPropertiesParser parser) {
+        _propertiesParser = parser;
+    }
+    
     private void invokeCamelProcessor(final org.apache.camel.Exchange camelExchange) throws HandlerException {
         try {
             getProcessor().process(camelExchange);
