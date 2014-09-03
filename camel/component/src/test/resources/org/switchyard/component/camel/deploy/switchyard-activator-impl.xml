@@ -35,7 +35,19 @@
             <sca:reference name="WarehouseService">
                 <sca:interface.java interface="org.switchyard.component.camel.deploy.support.WarehouseService"/>
             </sca:reference>
+            <sca:reference name="OrderService2">
+                <sca:interface.java interface="org.switchyard.component.camel.deploy.support.OrderService"/>
+            </sca:reference>
             <sca:property name="prop.component" value="prop.component value"/>
+        </sca:component>
+        <sca:component name="CamelComponent2">
+            <camel:implementation.camel xmlns="urn:switchyard-component-camel:config:1.0">
+                 <xml path="org/switchyard/component/camel/deploy/impl-route2.xml"/>
+            </camel:implementation.camel>
+            <sca:service name="OrderService2" >
+                <sca:interface.java interface="org.switchyard.component.camel.deploy.support.OrderService"/>
+            </sca:service>
+            <sca:property name="prop.component" value="prop.component2 value"/>
         </sca:component>
         <sca:property name="prop.composite" value="prop.composite value"/>
     </sca:composite>

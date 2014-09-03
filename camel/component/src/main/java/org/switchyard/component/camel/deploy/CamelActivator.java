@@ -19,6 +19,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.camel.component.properties.PropertiesComponent;
+import org.apache.camel.component.properties.PropertiesParser;
 import org.apache.camel.model.FromDefinition;
 import org.apache.camel.model.ProcessorDefinition;
 import org.apache.camel.model.RouteDefinition;
@@ -26,7 +27,6 @@ import org.apache.camel.model.ToDefinition;
 import org.switchyard.ServiceReference;
 import org.switchyard.SwitchYardException;
 import org.switchyard.common.camel.SwitchYardCamelContext;
-import org.switchyard.common.property.PropertyResolver;
 import org.switchyard.component.camel.CamelComponentMessages;
 import org.switchyard.component.camel.switchyard.ComponentNameComposer;
 import org.switchyard.component.camel.RouteFactory;
@@ -63,11 +63,6 @@ public class CamelActivator extends BaseCamelActivator {
     @Override
     public ServiceHandler activateService(QName serviceName, ComponentModel config) {
         ServiceHandler handler = null;
-
-        // add switchyard property parser to camel PropertiesComponent
-        PropertiesComponent propertiesComponent = getCamelContext().getComponent("properties", PropertiesComponent.class);
-        PropertyResolver pr = config.getModelConfiguration().getPropertyResolver();
-        propertiesComponent.setPropertiesParser(new SwitchYardPropertiesParser(pr));
         
         // process service
         for (ComponentServiceModel service : config.getServices()) {
@@ -86,9 +81,14 @@ public class CamelActivator extends BaseCamelActivator {
     }
 
     private ServiceHandler handleImplementation(final ComponentServiceModel config, final QName serviceName) {
+        PropertiesComponent propertiesComponent = getCamelContext().getComponent("properties", PropertiesComponent.class);
+        PropertiesParser originalPropertiesParser = propertiesComponent.getPropertiesParser();
+        SwitchYardPropertiesParser switchyardPropertiesParser = new SwitchYardPropertiesParser(config.getModelConfiguration().getPropertyResolver());
+        
         final CamelComponentImplementationModel ccim = 
                 (CamelComponentImplementationModel)config.getComponent().getImplementation();
         try {
+            propertiesComponent.setPropertiesParser(switchyardPropertiesParser);
             final String endpointUri = ComponentNameComposer.composeComponentUri(serviceName);
             final List<RouteDefinition> routeDefinitions = getRouteDefinition(ccim);
             verifyRouteDefinitions(routeDefinitions, ccim);
@@ -98,9 +98,15 @@ public class CamelActivator extends BaseCamelActivator {
             final SwitchYardConsumer consumer = endpoint.getConsumer();
             consumer.setComponentName(config.getComponent().getQName());
             consumer.setNamespace(serviceName.getNamespaceURI());
+            consumer.setPropertiesParser(switchyardPropertiesParser);
             return consumer;
+            
         } catch (final Exception e) {
             throw new SwitchYardException(e.getMessage(), e);
+        } finally {
+            if (originalPropertiesParser != null) {
+                propertiesComponent.setPropertiesParser(originalPropertiesParser);
+            }
         }
     }
 
