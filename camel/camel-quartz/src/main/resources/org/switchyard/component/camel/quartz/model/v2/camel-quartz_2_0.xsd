@@ -28,7 +28,10 @@
             <extension base="tns:BaseCamelBinding">
                 <sequence>
                     <element name="name" type="string" />
-                    <element name="cron" type="string" />
+                    <choice minOccurs="1" maxOccurs="1">
+			<group ref="tns:crongroup"/>
+                        <group ref="tns:triggergroup"/>
+                    </choice>
                     <element name="stateful" type="boolean" minOccurs="0" maxOccurs="1" />
                     <element name="trigger.startTime" type="dateTime" minOccurs="0" maxOccurs="1" />
                     <element name="trigger.endTime" type="dateTime" minOccurs="0" maxOccurs="1" />
@@ -37,5 +40,4 @@
             </extension>
         </complexContent>
     </complexType>
-
 </schema>

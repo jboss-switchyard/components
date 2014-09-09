@@ -165,4 +165,18 @@
         </sequence>
     </group>
 
+    <group name="crongroup">
+        <sequence>
+        <element name="cron" type="string" minOccurs="1" maxOccurs="1"/>
+        </sequence>
+    </group>
+ 
+    <group name="triggergroup">
+	<sequence>
+        <element name="trigger.repeatCount" type="switchyard:propInteger" minOccurs="0" maxOccurs="1" />
+        <element name="trigger.repeatInterval" type="switchyard:propLong" minOccurs="0" maxOccurs="1" />
+        </sequence>
+    </group>
+
+
 </schema>
