@@ -59,5 +59,12 @@ public interface SCALogger {
     @Message(id = 39204, value = "Cannot enable clustered SCA binding for %s.  No distributed cache is avaialble.")
     void cannotEnableClusteredSCABindingFor(String serviceName);
 
+    /**
+     * ignoringReceivedTransactionContext method definition.
+     */
+    @LogMessage(level = Level.WARN)
+    @Message(id = 39205, value = "Transaction context was received through remote SCA invocation, but remote transaction bridging is disabled on this node. Ignoring.")
+    void ignoringReceivedTransactionContext();
+
 }
 
