@@ -163,8 +163,12 @@ public class HttpGatewayServlet extends HttpServlet {
                         Map.Entry<String, List<String>> entry = entries.next();
                         String name = entry.getKey();
                         List<String> values = entry.getValue();
-                        for (String value : values) {
-                            response.addHeader(name, value);
+                        for (Object value : values) {
+                            if (value instanceof String) {
+                                response.addHeader(name, (String)value);
+                            } else {
+                                response.addHeader(name, value.toString());
+                            }
                         }
                     }
                     if (httpResponse.getBodyBytes() != null) {

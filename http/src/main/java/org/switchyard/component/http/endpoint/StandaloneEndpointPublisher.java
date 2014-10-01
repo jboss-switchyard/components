@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -116,7 +119,20 @@ public class StandaloneEndpointPublisher implements EndpointPublisher {
                 HttpResponseBindingData httpResponse = _handler.invoke(httpRequest);
                 try {
                     if (httpResponse != null) {
-                        exchange.getResponseHeaders().putAll(httpResponse.getHeaders());
+                        //exchange.getResponseHeaders().putAll(httpResponse.getHeaders());
+                        Iterator<Map.Entry<String, List<String>>> entries = httpResponse.getHeaders().entrySet().iterator();
+                        while (entries.hasNext()) {
+                            Map.Entry<String, List<String>> entry = entries.next();
+                            String name = entry.getKey();
+                            List<String> values = entry.getValue();
+                            for (Object value : values) {
+                                if (value instanceof String) {
+                                    exchange.getResponseHeaders().add(name, (String)value);
+                                } else {
+                                    exchange.getResponseHeaders().add(name, value.toString());
+                                }
+                            }
+                        }
                         if (httpResponse.getBodyBytes() != null) {
                             exchange.sendResponseHeaders(httpResponse.getStatus(), httpResponse.getBodyBytes().available());
                             httpResponse.writeBodyToStream(exchange.getResponseBody());
