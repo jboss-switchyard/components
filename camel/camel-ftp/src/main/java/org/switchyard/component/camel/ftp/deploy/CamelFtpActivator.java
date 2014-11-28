@@ -13,32 +13,34 @@
  */
 package org.switchyard.component.camel.ftp.deploy;
 
+
+import javax.xml.namespace.QName;
+
 import org.switchyard.common.camel.SwitchYardCamelContext;
 import org.switchyard.component.camel.common.deploy.BaseBindingActivator;
-import org.switchyard.component.camel.common.deploy.BaseBindingComponent;
-import org.switchyard.component.camel.ftp.model.v1.V1CamelFtpBindingModel;
-import org.switchyard.component.camel.ftp.model.v1.V1CamelFtpsBindingModel;
-import org.switchyard.component.camel.ftp.model.v1.V1CamelSftpBindingModel;
+import org.switchyard.component.camel.common.handler.InboundHandler;
+import org.switchyard.component.camel.ftp.model.CamelSftpBindingModel;
 
 /**
- * Ftp/ftps/sftp binding component.
+ * Camel ftp activator.
  */
-public class CamelFtpComponent extends BaseBindingComponent {
+public class CamelFtpActivator extends BaseBindingActivator {
 
     /**
-     * Creates new component.
+     * Creates new activator instance.
+     *
+     * @param context
+     *            Camel context.
+     * @param types
+     *            Activation types.
      */
-    public CamelFtpComponent() {
-        super("CamelFtpComponent",
-            V1CamelFtpBindingModel.FTP,
-            V1CamelFtpsBindingModel.FTPS,
-            V1CamelSftpBindingModel.SFTP
-        );
+    public CamelFtpActivator(SwitchYardCamelContext context, String[] types) {
+        super(context, types);
     }
 
-    @Override
-    protected BaseBindingActivator createActivator(SwitchYardCamelContext context, String... types) {
-        return new CamelFtpActivator(context, types);
+    @SuppressWarnings("unchecked")
+    protected <T extends CamelSftpBindingModel> InboundHandler<T> createInboundHandler(QName serviceName, T binding) {
+        return (InboundHandler<T>) new CamelSftpInboundHandler(binding, getCamelContext(), serviceName, getServiceDomain());
     }
 
 }

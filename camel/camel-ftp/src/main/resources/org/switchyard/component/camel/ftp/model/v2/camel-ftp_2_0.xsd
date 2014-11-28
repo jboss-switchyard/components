@@ -69,7 +69,7 @@
                     <element name="knownHostsFile" type="string" minOccurs="0" maxOccurs="1" />
                     <element name="privateKeyFile" type="string" minOccurs="0" maxOccurs="1" />
                     <element name="privateKeyFilePassphrase" type="string" minOccurs="0" maxOccurs="1" />
-
+					<element name="privateKeyPassphrase" type="string" minOccurs="0" maxOccurs="1" />
                     <choice minOccurs="0" maxOccurs="1">
                         <element name="consume" type="tns:RemoteFileConsumerType"/>
                         <element name="produce" type="tns:RemoteFileProducerType"/>
