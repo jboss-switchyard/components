@@ -83,6 +83,21 @@ public interface RESTEasyBindingModel extends BindingModel {
     public RESTEasyBindingModel setInterfaces(String interfaces);
 
     /**
+     * Gets the JAX-RS providers for this Service binding.
+     *
+     * @return the comma separated list of JAX-RS provider class names.
+     */
+    public String getProviders();
+
+    /**
+     * Sets the REST interfaces exposed by this Service binding.
+     *
+     * @param providers a comma separated list of JAVA class names
+     * @return RESTEasyBindingModel
+     */
+    public RESTEasyBindingModel setProviders(String providers);
+
+    /**
      * Gets the context path of the Resource interfaces.
      * 
      * This is applicable only if getPublish is true.

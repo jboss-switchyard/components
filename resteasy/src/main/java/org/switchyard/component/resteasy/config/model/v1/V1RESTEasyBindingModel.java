@@ -36,6 +36,7 @@ public class V1RESTEasyBindingModel extends V1BindingModel implements RESTEasyBi
 
     private static final String[] MODEL_CHILDREN_ORDER = new String[]{
         RESTEasyName.interfaces.name(),
+        RESTEasyName.providers.name(),
         RESTEasyName.contextPath.name(),
         RESTEasyName.address.name(),
         RESTEasyName.timeout.name(),
@@ -49,6 +50,7 @@ public class V1RESTEasyBindingModel extends V1BindingModel implements RESTEasyBi
 
     private RESTEasyNameValueModel _address;
     private RESTEasyNameValueModel _interfaces;
+    private RESTEasyNameValueModel _providers;
     private RESTEasyNameValueModel _contextPath;
     private RESTEasyNameValueModel _timeout;
     private BasicAuthModel _basicAuth;
@@ -137,6 +139,24 @@ public class V1RESTEasyBindingModel extends V1BindingModel implements RESTEasyBi
         } else {
             return new String[0];
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getProviders() {
+        if (_providers == null) {
+            _providers = getNameValue(RESTEasyName.providers);
+        }
+        return _providers != null ? _providers.getValue() : null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public RESTEasyBindingModel setProviders(String providers) {
+        _providers = setNameValue(_providers, RESTEasyName.providers, providers);
+        return this;
     }
 
     /**

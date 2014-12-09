@@ -57,7 +57,7 @@ public class StandaloneResourcePublisher implements ResourcePublisher {
     /**
      * {@inheritDoc}
      */
-    public Endpoint publish(ServiceDomain domain, String context, List<Object> instances) throws Exception {
+    public Endpoint publish(ServiceDomain domain, String context, List<Object> instances, String providers) throws Exception {
         List<Object> resourceInstances = new ArrayList<Object>();
         String path = _contextBuilder.getPath();
         if (path.startsWith("/")) {
