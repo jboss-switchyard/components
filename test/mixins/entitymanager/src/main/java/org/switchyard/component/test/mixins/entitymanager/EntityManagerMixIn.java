@@ -32,14 +32,17 @@ import org.enhydra.jdbc.pool.StandardXAPoolDataSource;
 import org.enhydra.jdbc.standard.StandardXADataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.switchyard.component.test.mixins.cdi.CDIMixIn;
 import org.switchyard.component.test.mixins.naming.NamingMixIn;
 import org.switchyard.component.test.mixins.transaction.TransactionMixIn;
+import org.switchyard.test.MixInDependencies;
 import org.switchyard.test.mixins.AbstractTestMixIn;
 
 /**
  *
  * @author Johnathan Ingram (jingram@rogueware.org)
  */
+@MixInDependencies(required = {CDIMixIn.class, NamingMixIn.class, TransactionMixIn.class})
 public class EntityManagerMixIn extends AbstractTestMixIn {
 
    protected static final Logger log = LoggerFactory.getLogger(EntityManagerMixIn.class);
@@ -51,6 +54,8 @@ public class EntityManagerMixIn extends AbstractTestMixIn {
 
    @Override
    public void initialize() {
+      super.initialize();
+
       // Get a reference to the TransactionMixIn
       try {
          transactionMixIn = getTestKit().getMixIn(TransactionMixIn.class);
