@@ -51,12 +51,15 @@ public class EntityManagerMixIn extends AbstractTestMixIn {
    @Override
    public void initialize() {
       // Get a reference to the TransactionMixIn
-      transactionMixIn = getTestKit().getMixIn(TransactionMixIn.class);
-      if (null == transactionMixIn) {
+      try {
+         transactionMixIn = getTestKit().getMixIn(TransactionMixIn.class);
+      } catch (Exception ex) {
          log.error("Unable to obtain a reference to the transaction manager mix-in");
       }
-      namingMixIn = getTestKit().getMixIn(NamingMixIn.class);
-      if (null == namingMixIn) {
+
+      try {
+         namingMixIn = getTestKit().getMixIn(NamingMixIn.class);
+      } catch (Exception ex) {
          log.error("Unable to obtain a reference to the naming mix-in");
       }
    }
