@@ -25,6 +25,18 @@
 	<name>SwitchYard: Entity Manager MixIn</name>
 	<description>Entity Manager MixIn classes</description>
 	<url>http://switchyard.org</url>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.experlog</groupId>
+				<artifactId>xapool</artifactId>
+				<version>1.5.0</version>
+			</dependency>				
+		</dependencies>
+	</dependencyManagement>
+	
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.jboss.as</groupId>
@@ -51,7 +63,6 @@
 		<dependency>
 			<groupId>com.experlog</groupId>
 			<artifactId>xapool</artifactId>
-			<version>1.5.0</version>
 		</dependency>		
 	</dependencies>
 </project>
