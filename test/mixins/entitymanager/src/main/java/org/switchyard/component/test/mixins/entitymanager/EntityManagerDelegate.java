@@ -42,10 +42,10 @@ public class EntityManagerDelegate implements InvocationHandler, Serializable {
    private transient static final Logger log = LoggerFactory.getLogger(EntityManagerDelegate.class);
    private transient static final ThreadLocal<Map<String, Map<Integer, EntityManager>>> threadEntityManagerByTransaction = new ThreadLocal<Map<String, Map<Integer, EntityManager>>>();
 
-   private final String unitName;
+   private String unitName;
 
    public EntityManagerDelegate(String unitName) {
-      this.unitName = unitName == null ? EntityManagerMixIn.getDefaultPersistenceUnitName() : unitName;
+      this.unitName = unitName;
    }
 
    @Override
@@ -59,6 +59,9 @@ public class EntityManagerDelegate implements InvocationHandler, Serializable {
    }
 
    private EntityManager getEntityManagerForCurrentTransaction() throws SystemException, TransactionRequiredException {
+		if (null == unitName) {
+         unitName = EntityManagerMixIn.getDefaultPersistenceUnitName();
+		}
       long threadId = Thread.currentThread().getId();
       EntityManager em = null;
 

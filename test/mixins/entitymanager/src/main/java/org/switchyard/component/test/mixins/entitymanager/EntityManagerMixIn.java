@@ -20,6 +20,7 @@ package org.switchyard.component.test.mixins.entitymanager;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
@@ -43,8 +44,8 @@ public class EntityManagerMixIn extends AbstractTestMixIn {
 
    protected static final Logger log = LoggerFactory.getLogger(EntityManagerMixIn.class);
 
-   private static final Map<String, EntityManagerFactory> emfs = Collections.synchronizedMap(new HashMap<String, EntityManagerFactory>());
-   private static String primayPU;
+   private static final Map<String, EntityManagerFactory> emfs = Collections.synchronizedMap(new LinkedHashMap<String, EntityManagerFactory>());
+   private static String primaryPU;
    private static TransactionMixIn transactionMixIn;
    private static NamingMixIn namingMixIn;
 
@@ -97,8 +98,8 @@ public class EntityManagerMixIn extends AbstractTestMixIn {
          EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnitName);
 
          emfs.put(persistenceUnitName, emf);
-         if (null == primayPU) {
-            primayPU = persistenceUnitName;
+         if (null == primaryPU) {
+            primaryPU = persistenceUnitName;
          }
       } catch (Exception ex) {
          log.error("Unable to create the entity manager factory for persistence unit name '{}'", persistenceUnitName, ex);
@@ -107,12 +108,12 @@ public class EntityManagerMixIn extends AbstractTestMixIn {
    }
 
    protected static String getDefaultPersistenceUnitName() {
-      return primayPU;
+      return primaryPU;
    }
 
    protected static EntityManagerFactory getEntityManagerFactory() {
-      if (null != primayPU) {
-         return emfs.get(primayPU);
+      if (null != primaryPU) {
+         return emfs.get(primaryPU);
       } else {
          log.error("Unable to obtain the default entity manager as no entity manager factories have been set with 'createEntityManagerFactory'");
          return null;

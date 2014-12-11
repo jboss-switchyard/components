@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="         http://java.sun.com/xml/ns/persistence         http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-  <persistence-unit name="mixin-test-one" transaction-type="JTA">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <jta-data-source>java:jboss/datasources/MixInTestOne</jta-data-source>
-    <!--mapping-file>META-INF/orm.xml</mapping-file-->
-    <properties/>
-  </persistence-unit>
+	<persistence-unit name="mixin-test-one" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>java:jboss/datasources/MixInTestOne</jta-data-source>
+		<class>org.switchyard.component.test.mixins.entitymanager.BasicTable</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<properties>
+			<property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform"/>
+			<property name="hibernate.show_sql" value="false"/>
+		</properties>
+	</persistence-unit>
+
+	<persistence-unit name="mixin-test-two" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>java:jboss/datasources/MixInTestTwo</jta-data-source>
+		<class>org.switchyard.component.test.mixins.entitymanager.BasicTable</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<properties>
+			<property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform"/>
+			<property name="hibernate.show_sql" value="false"/>
+		</properties>
+	</persistence-unit>
+
 </persistence>
