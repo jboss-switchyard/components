@@ -29,12 +29,6 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.h2database</groupId>
-				<artifactId>h2</artifactId>
-				<version>1.4.181</version>
-			</dependency>
-			
-			<dependency>
 				<groupId>com.experlog</groupId>
 				<artifactId>xapool</artifactId>
 				<version>1.5.0</version>
@@ -44,18 +38,6 @@
 	
 	
 	<dependencies>
-		<!-- internal dependencies -->
-		<dependency>
-			<groupId>org.switchyard</groupId>
-			<artifactId>switchyard-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.switchyard</groupId>
-			<artifactId>switchyard-common</artifactId>
-		</dependency>
-
-		
-		
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -72,6 +54,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.switchyard.components</groupId>
 			<artifactId>switchyard-component-test-mixin-cdi</artifactId>
@@ -87,7 +70,6 @@
 		<dependency>
 			<groupId>org.switchyard.components</groupId>
 			<artifactId>switchyard-component-bean</artifactId>
-			<scope>test</scope>
 		</dependency>		
 		
 		<dependency>
@@ -101,18 +83,6 @@
 
 							
 		<!-- external dependencies -->
-		<dependency>
-			<groupId>org.jboss.spec.javax.resource</groupId>
-			<artifactId>jboss-connector-api_1.6_spec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.weld.se</groupId>
-			<artifactId>weld-se-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.weld</groupId>
-			<artifactId>weld-spi</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>com.experlog</groupId>
 			<artifactId>xapool</artifactId>

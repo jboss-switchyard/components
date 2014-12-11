@@ -19,7 +19,6 @@
 package org.switchyard.component.test.mixins.entitymanager;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.naming.InitialContext;
@@ -151,4 +150,6 @@ public class EntityManagerMixIn extends AbstractTestMixIn {
          return null;
       }
    }
+   
+
 }

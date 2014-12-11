@@ -75,7 +75,7 @@ public class CDIPersistenceExtension implements Extension {
                //   make sure the field has the @Inject 
                if (javax.persistence.EntityManager.class.equals(af.getJavaMember().getType())
                      && af.isAnnotationPresent(PersistenceContext.class)) {
-                  result.add(addAnnotation(af, AnnotationWrappers.Inject.getAnnotation()));
+                  result.add(addAnnotation(af, Inject.getAnnotation()));
                } else {
                   result.add(af);
                }
@@ -172,4 +172,18 @@ public class CDIPersistenceExtension implements Extension {
          }
       };
    }	 
+   
+   public static class Inject {
+
+      @javax.inject.Inject
+      public static Object field;
+
+      public static Annotation getAnnotation() {
+         try {
+            return Inject.class.getField("field").getAnnotation(javax.inject.Inject.class);
+         } catch (Exception ex) {
+            return null;
+         }
+      }
+   }      
 }
