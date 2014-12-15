@@ -35,6 +35,7 @@ import org.switchyard.component.common.knowledge.session.KnowledgeSession;
 import org.switchyard.component.common.knowledge.session.KnowledgeSessionFactory;
 import org.switchyard.component.common.knowledge.util.Environments;
 import org.switchyard.component.common.knowledge.util.Operations;
+import org.switchyard.component.common.knowledge.util.Propertys;
 import org.switchyard.component.common.knowledge.util.Resources;
 import org.switchyard.deploy.BaseServiceHandler;
 import org.switchyard.deploy.ServiceHandler;
@@ -50,6 +51,7 @@ import org.switchyard.metadata.ServiceOperation;
  */
 public abstract class KnowledgeExchangeHandler<M extends KnowledgeComponentImplementationModel> extends BaseServiceHandler implements ServiceHandler {
 
+    private final Map<String, Object> _properties = new HashMap<String, Object>();
     private final String _deploymentId;
     private final M _model;
     private final ServiceDomain _serviceDomain;
@@ -67,6 +69,11 @@ public abstract class KnowledgeExchangeHandler<M extends KnowledgeComponentImple
      */
     public KnowledgeExchangeHandler(M model, ServiceDomain serviceDomain, QName serviceName) {
         super(serviceDomain);
+        // SWITCHYARD-2393: copy properties into environment (not just into session configuration)
+        Properties properties = Propertys.getProperties(model, null);
+        for (Map.Entry<Object, Object> property : properties.entrySet()) {
+            _properties.put((String)property.getKey(), property.getValue());
+        }
         // TODO: revisit how deploymentId is created and used
         _deploymentId = serviceName.toString();
         _model = model;
@@ -128,6 +135,8 @@ public abstract class KnowledgeExchangeHandler<M extends KnowledgeComponentImple
      */
     protected Map<String, Object> getEnvironmentOverrides() {
         Map<String, Object> env = new HashMap<String, Object>();
+        // SWITCHYARD-2393: copy properties into environment (not just into session configuration)
+        env.putAll(_properties);
         env.put(Environments.DEPLOYMENT_ID, getDeploymentId());
         return env;
     }
