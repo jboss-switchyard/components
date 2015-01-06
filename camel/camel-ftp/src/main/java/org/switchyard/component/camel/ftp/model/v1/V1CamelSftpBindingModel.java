@@ -6,7 +6,7 @@
  * You may obtain a copy of the License at
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,  
+ * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -21,7 +21,7 @@ import org.switchyard.config.model.Descriptor;
 
 /**
  * Sftp protocol binding.
- * 
+ *
  * @author Lukasz Dywicki
  */
 public class V1CamelSftpBindingModel extends V1CamelRemoteFileBindingModel
@@ -35,10 +35,11 @@ public class V1CamelSftpBindingModel extends V1CamelRemoteFileBindingModel
     private static final String KNOWN_HOSTS_FILE = "knownHostsFile";
     private static final String PRIVATE_KEY_FILE = "privateKeyFile";
     private static final String PRIVATE_KEY_FILE_PASSPHRASE = "privateKeyFilePassphrase";
+    private static final String PRIVATE_KEY_PASSPHRASE = "privateKeyPassphrase";
 
     /**
      * Create a CamelSftpBindingModel from the specified configuration and descriptor.
-     * 
+     *
      * @param config The switchyard configuration instance.
      * @param descriptor The switchyard descriptor instance.
      */
@@ -53,7 +54,7 @@ public class V1CamelSftpBindingModel extends V1CamelRemoteFileBindingModel
     public V1CamelSftpBindingModel(String namespace) {
         super(SFTP, namespace);
 
-        setModelChildrenOrder(KNOWN_HOSTS_FILE, PRIVATE_KEY_FILE, PRIVATE_KEY_FILE_PASSPHRASE,
+        setModelChildrenOrder(KNOWN_HOSTS_FILE, PRIVATE_KEY_FILE, PRIVATE_KEY_FILE_PASSPHRASE, PRIVATE_KEY_PASSPHRASE,
             PRODUCE, CONSUME);
     }
 
@@ -85,6 +86,16 @@ public class V1CamelSftpBindingModel extends V1CamelRemoteFileBindingModel
     @Override
     public V1CamelSftpBindingModel setPrivateKeyFilePassphrase(String passphrase) {
         return setConfig(PRIVATE_KEY_FILE_PASSPHRASE, passphrase);
+    }
+
+    @Override
+    public String getPrivateKeyPassphrase() {
+        return getConfig(PRIVATE_KEY_PASSPHRASE);
+    }
+
+    @Override
+    public V1CamelSftpBindingModel setPrivateKeyPassphrase(String passphrase) {
+        return setConfig(PRIVATE_KEY_PASSPHRASE, passphrase);
     }
 
     @Override
