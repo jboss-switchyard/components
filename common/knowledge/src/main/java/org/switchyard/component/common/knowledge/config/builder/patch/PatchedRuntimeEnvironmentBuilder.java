@@ -230,8 +230,8 @@ public class PatchedRuntimeEnvironmentBuilder implements RuntimeEnvironmentBuild
      *
      */
     public static RuntimeEnvironmentBuilder getDefault(ReleaseId releaseId, String kbaseName, String ksessionName) {
-        MavenRepository repository = MavenRepository.getMavenRepository();
-        repository.resolveArtifact(releaseId.toExternalForm());
+        //MavenRepository repository = MavenRepository.getMavenRepository();
+        //repository.resolveArtifact(releaseId.toExternalForm());
         KieServices ks = KieServices.Factory.get();
         KieContainer kieContainer = ks.newKieContainer(releaseId);
         
