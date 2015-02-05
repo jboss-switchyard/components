@@ -44,8 +44,6 @@
         <module>test</module>
         <module>sca</module>
         <module>bean</module>
-        <module>rules</module>
-        <module>bpm</module>
         <module>resteasy</module>
         <module>soap</module>
         <module>bpel</module>
@@ -102,4 +100,16 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
+    <profiles>
+        <profile>
+            <id>brms</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>rules</module>
+	            <module>bpm</module>
+            </modules>	
+        </profile>
+    </profiles>
 </project>

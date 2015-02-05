@@ -28,8 +28,18 @@
     <modules>
         <module>camel</module>
         <module>common</module>
-        <module>knowledge</module>
     </modules>
+    <profiles>
+        <profile>
+            <id>brms</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>knowledge</module>
+            </modules>	
+        </profile>
+    </profiles>
     <build>
         <plugins>
             <plugin>
