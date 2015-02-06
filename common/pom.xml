@@ -32,8 +32,10 @@
     <profiles>
         <profile>
             <id>brms</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
+             <activation>
+                <property>
+                    <name>!skipBRMS</name>
+                </property>
             </activation>
             <modules>
                 <module>knowledge</module>
