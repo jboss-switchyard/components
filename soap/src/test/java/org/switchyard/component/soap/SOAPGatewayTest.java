@@ -277,7 +277,7 @@ public class SOAPGatewayTest {
         if (rootCause != null) {
             // A real URL here would depend on the test environment's host and port hence,
             // it is sufficient to test that we actually loaded the WSDL from classpath
-            Assert.assertEquals("javax.xml.ws.WebServiceException: Unsupported endpoint address: REPLACE_WITH_ACTUAL_URL", rootCause);
+            Assert.assertEquals("java.net.UnknownHostException: REPLACE_WITH_ACTUAL_URL", rootCause);
         }
     }
 

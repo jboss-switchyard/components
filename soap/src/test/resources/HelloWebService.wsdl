@@ -66,7 +66,7 @@
   </binding>
   <service name="HelloWebService">
     <port name="HelloWebServicePort" binding="tns:HelloWebServicePortBinding">
-      <soap:address location="REPLACE_WITH_ACTUAL_URL"/>
+      <soap:address location="http://REPLACE_WITH_ACTUAL_URL"/>
     </port>
   </service>
 </definitions>
