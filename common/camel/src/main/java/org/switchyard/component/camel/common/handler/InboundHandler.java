@@ -84,7 +84,8 @@ public class InboundHandler<T extends CamelBindingModel> extends BaseServiceHand
         addTransactionPolicy(route);
         addNamespacePolicy(route);
         
-        route.setProperty(ExchangeCompletionEvent.GATEWAY_NAME).simple(getBindingModel().getName(), String.class)
+        route.autoStartup(getBindingModel().isAutoStartup())
+            .setProperty(ExchangeCompletionEvent.GATEWAY_NAME).simple(getBindingModel().getName(), String.class)
             .setProperty(CamelConstants.APPLICATION_NAMESPACE).constant(_serviceName.getNamespaceURI())
             .process(new MessageComposerProcessor(getBindingModel()))
             .process(new OperationSelectorProcessor(getServiceName(), getBindingModel()))
