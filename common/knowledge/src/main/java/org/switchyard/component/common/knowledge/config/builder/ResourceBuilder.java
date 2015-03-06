@@ -59,7 +59,14 @@ public class ResourceBuilder extends KnowledgeBuilder {
             ResourceDetail syResourceDetail = resourceModel.getDetail();
             if (syResourceDetail != null) {
                 if (ResourceType.DTABLE.equals(_resourceType)) {
-                    String inputType = getInputType(syResourceDetail, DecisionTableInputType.XLS.toString());
+                    String inputType;
+                    if(syResourceDetail.getInputType().toLowerCase().endsWith("csv")) {
+                        inputType = getInputType(syResourceDetail, DecisionTableInputType.CSV.toString());
+                    }
+                    else{
+                        inputType = getInputType(syResourceDetail, DecisionTableInputType.XLS.toString());
+                    }
+
                     DecisionTableConfiguration dtc = KnowledgeBuilderFactory.newDecisionTableConfiguration();
                     dtc.setInputType(DecisionTableInputType.valueOf(inputType));
                     dtc.setWorksheetName(getWorksheetName(syResourceDetail));
