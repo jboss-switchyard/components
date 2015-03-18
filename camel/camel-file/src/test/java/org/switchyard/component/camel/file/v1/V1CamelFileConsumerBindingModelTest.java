@@ -46,7 +46,7 @@ public class V1CamelFileConsumerBindingModelTest extends V1BaseCamelServiceBindi
     private static final Boolean IDEMPOTENT = true;
     private static final String SORT_BY = "file:name";
     private static final String READ_LOCK = "fileLock";
-    private static final Long READ_LOCK_TIMEOUT = 10L;
+    private static final Long READ_LOCK_TIMEOUT = new Long(3000);
     private static final Integer READ_LOCK_CHECK_INTERVAL = new Integer(1000);
     private static final Boolean STARTING_DIRECTORY_MUST_EXIST = false;
     private static final Boolean DIRECTORY_MUST_EXIST = Boolean.TRUE;
@@ -54,7 +54,7 @@ public class V1CamelFileConsumerBindingModelTest extends V1BaseCamelServiceBindi
     private static final String CAMEL_URI = "file:///input/directory?delay=1000&initialDelay=500&maxMessagesPerPoll=100&delete=false&" +
         "recursive=true&noop=false&preMove=.inProgress&move=.done&moveFailed=.failed&" +
         "include=*.csv&exclude=*.xml&idempotent=true&sortBy=file:name&" +
-        "readLock=fileLock&readLockTimeout=10&readLockCheckInterval=1000&" +
+        "readLock=fileLock&readLockTimeout=3000&readLockCheckInterval=1000&" +
         "startingDirectoryMustExist=false&directoryMustExist=true&doneFileName=done";
 
     public V1CamelFileConsumerBindingModelTest() {
