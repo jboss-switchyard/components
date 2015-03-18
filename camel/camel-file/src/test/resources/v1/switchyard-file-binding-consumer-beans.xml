@@ -35,7 +35,7 @@
                     <file:idempotent>true</file:idempotent>
                     <file:sortBy>file:name</file:sortBy>
                     <file:readLock>fileLock</file:readLock>
-                    <file:readLockTimeout>10</file:readLockTimeout>
+                    <file:readLockTimeout>3000</file:readLockTimeout>
                     <file:readLockCheckInterval>1000</file:readLockCheckInterval>
                     <file:startingDirectoryMustExist>false</file:startingDirectoryMustExist>
                     <file:directoryMustExist>true</file:directoryMustExist>
