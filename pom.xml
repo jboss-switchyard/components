@@ -100,18 +100,4 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
-    <profiles>
-        <profile>
-            <id>brms</id>
-            <activation>
-                <property>
-                    <name>!skipBRMS</name>
-                </property>
-            </activation>
-            <modules>
-                <module>rules</module>
-                <module>bpm</module>
-            </modules>
-        </profile>
-    </profiles>
 </project>
