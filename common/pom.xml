@@ -29,19 +29,6 @@
         <module>camel</module>
         <module>common</module>
     </modules>
-    <profiles>
-        <profile>
-            <id>brms</id>
-            <activation>
-                <property>
-                    <name>!skipBRMS</name>
-                </property>
-            </activation>
-            <modules>
-                <module>knowledge</module>
-            </modules>
-        </profile>
-    </profiles>
     <build>
         <plugins>
             <plugin>
