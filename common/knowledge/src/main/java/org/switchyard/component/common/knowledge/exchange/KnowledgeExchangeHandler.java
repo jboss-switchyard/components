@@ -56,6 +56,8 @@ public abstract class KnowledgeExchangeHandler extends BaseServiceHandler implem
     private ClassLoader _loader;
     private KnowledgeRuntimeManagerFactory _runtimeManagerFactory;
 
+    private static final String PACKAGE_RESOURCES = "/org/switchyard/component/common/knowledge/resource/resourceType.properties";
+
     /**
      * Constructs a new KnowledgeExchangeHandler with the specified model, service domain, and service name.
      * @param model the specified model
@@ -99,7 +101,7 @@ public abstract class KnowledgeExchangeHandler extends BaseServiceHandler implem
     @Override
     protected void doStart() {
         _loader = Classes.getClassLoader(getDeploymentClassLoader(), getClass().getClassLoader());
-        ResourceType.install(_loader);
+        ResourceType.install(_loader, PACKAGE_RESOURCES);
         KnowledgeOperations.registerOperations(_model, _operations, getDefaultOperation());
         _runtimeManagerFactory = new KnowledgeRuntimeManagerFactory(_loader, _serviceDomain, _serviceName, _model);
     }
