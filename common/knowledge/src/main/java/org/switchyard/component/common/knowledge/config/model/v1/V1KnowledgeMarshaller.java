@@ -63,6 +63,7 @@ public class V1KnowledgeMarshaller extends V1CompositeMarshaller {
      */
     public V1KnowledgeMarshaller(Descriptor desc) {
         super(desc);
+        System.setProperty("org.jbpm.runtime.manager.class", "org.switchyard.component.common.knowledge.runtime.KnowledgeRuntimeManagerFactoryImpl");
     }
 
     /**
