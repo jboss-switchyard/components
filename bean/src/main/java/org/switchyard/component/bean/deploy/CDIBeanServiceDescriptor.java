@@ -80,7 +80,7 @@ public class CDIBeanServiceDescriptor implements ServiceDescriptor {
             CreationalContext creationalContext = beanManager.createCreationalContext(_cdiBean.getBean());
             Object beanRef = beanManager.getReference(_cdiBean.getBean(), Object.class, creationalContext);
 
-            return new ServiceProxyHandler(beanRef, _serviceMetadata, _beanDeploymentMetaData);
+            return new ServiceProxyHandler(_serviceName, beanRef, _serviceMetadata, _beanDeploymentMetaData, creationalContext);
         } finally {
             Thread.currentThread().setContextClassLoader(tccl);
         }

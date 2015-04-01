@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.enterprise.context.spi.CreationalContext;
 import javax.xml.namespace.QName;
 
 import org.jboss.logging.Logger;
@@ -54,6 +55,10 @@ public class ServiceProxyHandler extends BaseServiceHandler implements ServiceHa
     private static Logger _logger = Logger.getLogger(ServiceProxyHandler.class);
 
     /**
+     * The service name.
+     */
+    private String _serviceName;
+    /**
      * The Service bean instance being proxied to.
      */
     private Object _serviceBean;
@@ -65,6 +70,10 @@ public class ServiceProxyHandler extends BaseServiceHandler implements ServiceHa
      * Deployment metadata.
      */
     private BeanDeploymentMetaData _beanDeploymentMetaData;
+    /**
+     * CDI bean CreationalContext.
+     */
+    private CreationalContext<?> _beanCreationalContext;
     
     private Map<String, ServiceReference> _references = 
             new HashMap<String, ServiceReference>();
@@ -72,16 +81,22 @@ public class ServiceProxyHandler extends BaseServiceHandler implements ServiceHa
     /**
      * Public constructor.
      *
+     * @param serviceName     Service name.
      * @param serviceBean     The Service bean instance being proxied to.
      * @param serviceMetadata The Service bean metadata.
      * @param beanDeploymentMetaData Deployment metadata.
+     * @param creationalContext CDI Bean CreationalContext.
      */
-    public ServiceProxyHandler(Object serviceBean,
+    public ServiceProxyHandler(String serviceName,
+            Object serviceBean,
             BeanServiceMetadata serviceMetadata, 
-            BeanDeploymentMetaData beanDeploymentMetaData) {
+            BeanDeploymentMetaData beanDeploymentMetaData,
+            CreationalContext<?> creationalContext) {
+        _serviceName = serviceName;
         _serviceBean = serviceBean;
         _serviceMetadata = serviceMetadata;
         _beanDeploymentMetaData = beanDeploymentMetaData;
+        _beanCreationalContext = creationalContext;
     }
 
     /**
@@ -223,8 +238,10 @@ public class ServiceProxyHandler extends BaseServiceHandler implements ServiceHa
     }
 
     @Override
-    public void stop() {
-        // NOP
-        // leave state alone
+    protected void doStop() {
+        if (_logger.isDebugEnabled()) {
+            _logger.debug("STOP: " + _serviceName);
+        }
+        _beanCreationalContext.release();
     }
 }
