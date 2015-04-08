@@ -28,6 +28,7 @@ import org.switchyard.component.camel.common.CommonCamelMessages;
 import org.switchyard.component.camel.common.model.CamelBindingModel;
 import org.switchyard.component.camel.common.transaction.TransactionHelper;
 import org.switchyard.deploy.BaseServiceHandler;
+import org.switchyard.deploy.internal.Deployment;
 import org.switchyard.runtime.event.ExchangeCompletionEvent;
 
 /**
@@ -65,10 +66,13 @@ public class InboundHandler<T extends CamelBindingModel> extends BaseServiceHand
         _camelContext = camelContext;
         _serviceName = serviceName;
 
-        try {
-            _camelContext.addRouteDefinition(createRouteDefinition());
-        } catch (final Exception e) {
-            throw new SwitchYardException(e);
+        Object disable = domain != null ? domain.getProperty(Deployment.DISABLE_AUTO_STARTUP_PROPERTY) : null;
+        if (disable == null || !Boolean.parseBoolean((String)disable)) {
+            try {
+                _camelContext.addRouteDefinition(createRouteDefinition());
+            } catch (final Exception e) {
+                throw new SwitchYardException(e);
+            }
         }
     }
 
