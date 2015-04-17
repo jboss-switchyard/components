@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -54,8 +55,25 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.ChallengeState;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.NTCredentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.auth.params.AuthPNames;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.params.AuthPolicy;
+import org.apache.http.client.utils.HttpClientUtils;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.BasicAuthCache;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.jboss.logging.Logger;
 import org.switchyard.ExchangePattern;
+import org.switchyard.common.codec.Base64;
 import org.switchyard.common.type.Classes;
 import org.switchyard.common.xml.XMLHelper;
 import org.switchyard.component.soap.SOAPMessages;
@@ -139,16 +157,67 @@ public final class WSDLUtil {
      */
     public static Definition readWSDL(final String wsdlLocation) throws WSDLException {
         InputStream inputStream = null;
+        HttpClient httpclient = null;
+        HttpResponse response = null;
         try {
+            AuthScope authScope = null;
+            AuthCache authCache = null;
+            Credentials credentials = null;
             URL url = getURL(wsdlLocation);
-            inputStream = url.openStream();
+            URL wsdlUrl = null;
+            httpclient = new DefaultHttpClient();
+            if (url.getUserInfo() != null) {
+                String userInfo = url.getUserInfo();
+                int idx = userInfo.indexOf("\\");
+                String authString = Base64.encode(userInfo.getBytes());
+                if (idx > 0) {
+                    // NTLM
+                    String domain = userInfo.substring(0, idx);
+                    String rest = userInfo.substring(idx + 1, userInfo.length());
+                    int idx1 = rest.indexOf(":");
+                    String name = rest.substring(0, idx1);
+                    String pass = rest.substring(idx1 + 1, rest.length());
+                    authScope = new AuthScope(url.getHost(), url.getPort(), AuthScope.ANY_REALM);
+                    credentials = new NTCredentials(name,
+                                        pass,
+                                        "",
+                                        domain);
+                } else {
+                    // BASIC
+                    int idx1 = userInfo.indexOf(":");
+                    String name = userInfo.substring(0, idx1);
+                    String pass = userInfo.substring(idx1 + 1, userInfo.length());
+                    authScope = new AuthScope(url.getHost(), url.getPort(), AuthScope.ANY_REALM);
+                    credentials = new UsernamePasswordCredentials(name, pass);
+                    // Create AuthCache instance
+                    authCache = new BasicAuthCache();
+                    authCache.put(new HttpHost(authScope.getHost(), authScope.getPort()), new BasicScheme(ChallengeState.TARGET));
+                }
+                wsdlUrl = new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile());
+                ((DefaultHttpClient)httpclient).getCredentialsProvider().setCredentials(authScope, credentials);
+                List<String> authpref = new ArrayList<String>();
+                authpref.add(AuthPolicy.NTLM);
+                authpref.add(AuthPolicy.BASIC);
+                httpclient.getParams().setParameter(AuthPNames.TARGET_AUTH_PREF, authpref);
+                // Send a request for the Negotiation
+                HttpGet wsdlGet = new HttpGet(wsdlUrl.toString());
+                response = httpclient.execute(wsdlGet);
+                // Now send the actual request
+                HttpClientUtils.closeQuietly(response);
+                response = httpclient.execute(wsdlGet);
+                inputStream = response.getEntity().getContent();
+            } else {
+                wsdlUrl = url;
+                URLConnection urlConnection = wsdlUrl.openConnection();
+                inputStream = urlConnection.getInputStream();
+            }
             InputSource source = new InputSource(inputStream);
-            source.setSystemId(url.toString());
+            source.setSystemId(wsdlUrl.toString());
             Document wsdlDoc = XMLHelper.getDocument(source);
             WSDLFactory wsdlFactory = WSDLFactory.newInstance();
             WSDLReader reader = wsdlFactory.newWSDLReader();
             reader.setFeature("javax.wsdl.verbose", false);
-            return reader.readWSDL(url.toString(), wsdlDoc);
+            return reader.readWSDL(wsdlUrl.toString(), wsdlDoc);
         } catch (Exception e) {
             throw new WSDLException(WSDLException.OTHER_ERROR,
                     SOAPMessages.MESSAGES.unableToReadWSDL(wsdlLocation), e);
@@ -156,6 +225,12 @@ public final class WSDLUtil {
             if (inputStream != null) {
                 try {
                     inputStream.close();
+                    if (response != null) {
+                        HttpClientUtils.closeQuietly(response);
+                    }
+                    if (httpclient != null) {
+                        httpclient.getConnectionManager().shutdown();
+                    }
                 } catch (IOException ioe) {
                     LOGGER.error(ioe);
                 }

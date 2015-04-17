@@ -34,6 +34,7 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.soap.MTOMFeature;
 import javax.xml.ws.soap.SOAPFaultException;
 
+import org.apache.cxf.BusFactory;
 import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.configuration.security.ProxyAuthorizationPolicy;
 import org.apache.cxf.endpoint.Client;
@@ -42,6 +43,7 @@ import org.apache.cxf.jaxws.DispatchImpl;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.transports.http.configuration.ProxyServerType;
+import org.apache.cxf.wsdl.WSDLManager;
 import org.jboss.logging.Logger;
 import org.switchyard.Context;
 import org.switchyard.Exchange;
@@ -100,13 +102,22 @@ public class OutboundHandler extends BaseServiceHandler {
     protected void doStart() throws WebServiceConsumeException {
         if (_dispatcher == null) {
             try {
-                Definition definition = WSDLUtil.readWSDL(_config.getWsdl());
                 PortName portName = _config.getPort();
+                URL wsdlUrl = WSDLUtil.getURL(_config.getWsdl());
+                SOAPLogger.ROOT_LOGGER.creatingDispatchWithWSDL(wsdlUrl.toString());
+
+                Definition definition = null;
+                definition = WSDLUtil.readWSDL(_config.getWsdl());
                 javax.wsdl.Service wsdlService = WSDLUtil.getService(definition, portName);
                 _wsdlPort = WSDLUtil.getPort(wsdlService, portName);
                 // Update the portName
                 portName.setServiceQName(wsdlService.getQName());
                 portName.setName(_wsdlPort.getName());
+
+                // Cache the read WSDL definition
+                BusFactory.getThreadDefaultBus().getExtension(WSDLManager.class).addDefinition(wsdlUrl.toString(), definition);
+
+                Service service = Service.create(wsdlUrl, portName.getServiceQName());
 
                 String style = WSDLUtil.getStyle(_wsdlPort);
                 _documentStyle = style.equals(WSDLUtil.DOCUMENT) ? true : false;
@@ -123,11 +134,6 @@ public class OutboundHandler extends BaseServiceHandler {
                 if (_config.getMtomConfig() != null) {
                     ((SOAPMessageComposer)_messageComposer).setXopExpand(_config.getMtomConfig().isXopExpand());
                 }
-
-                URL wsdlUrl = WSDLUtil.getURL(_config.getWsdl());
-                SOAPLogger.ROOT_LOGGER.creatingDispatchWithWSDL(wsdlUrl.toString());
-
-                Service service = Service.create(wsdlUrl, portName.getServiceQName());
 
                 _dispatcher = service.createDispatch(portName.getPortQName(),
                                     SOAPMessage.class,
