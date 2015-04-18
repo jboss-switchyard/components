@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+- Copyright 2014 Johnathan Ingram & Rainer Schamm
+-
+- Licensed under the Apache License, Version 2.0 (the "License")
+- you may not use this file except in compliance with the License.
+- You may obtain a copy of the License at
+- http://www.apache.org/licenses/LICENSE-2.0
+- Unless required by applicable law or agreed to in writing, software
+- distributed under the License is distributed on an "AS IS" BASIS,
+- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- See the License for the specific language governing permissions and
+- limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.switchyard.components</groupId>
+		<artifactId>switchyard-component-test-parent</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+	<artifactId>switchyard-component-test-mixin-entitymanager</artifactId>
+	<packaging>jar</packaging>
+	<name>SwitchYard: Entity Manager MixIn</name>
+	<description>Entity Manager MixIn classes</description>
+	<url>http://switchyard.org</url>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.experlog</groupId>
+				<artifactId>xapool</artifactId>
+				<version>1.5.0</version>
+			</dependency>				
+		</dependencies>
+	</dependencyManagement>
+	
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.jboss.as</groupId>
+			<artifactId>jboss-as-naming</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jboss.logmanager</groupId>
+					<artifactId>log4j-jboss-logmanager</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.switchyard.components</groupId>
+			<artifactId>switchyard-component-test-mixin-cdi</artifactId>
+		</dependency>				
+		<dependency>
+			<groupId>org.switchyard.components</groupId>
+			<artifactId>switchyard-component-test-mixin-naming</artifactId>
+		</dependency>				
+		<dependency>
+			<groupId>org.switchyard.components</groupId>
+			<artifactId>switchyard-component-test-mixin-jca</artifactId>
+		</dependency>				
+		<dependency>
+			<groupId>org.switchyard.components</groupId>
+			<artifactId>switchyard-component-bean</artifactId>
+		</dependency>		
+		
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.0-api</artifactId>
+		</dependency>						
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+		</dependency>
+
+							
+		<!-- external dependencies -->
+		<dependency>
+			<groupId>com.experlog</groupId>
+			<artifactId>xapool</artifactId>
+		</dependency>		
+	</dependencies>
+</project>

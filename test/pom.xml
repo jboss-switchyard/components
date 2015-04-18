@@ -34,6 +34,7 @@
         <module>mixins/http</module>
         <module>mixins/jca</module>
         <module>mixins/smooks</module>
+        <module>mixins/entitymanager</module>
     </modules>
     <dependencies>
         <!-- internal dependencies -->
