@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -112,6 +113,18 @@ public class InboundHandlerTest extends InboundHandlerTestBase {
         mockTransaction("jtaTransactionManager");
         createInboundHandler("transaction://foo?transactionManager=#jtaTransactionManager");
         _camelContext.start();
+        _camelContext.stop();
+    }
+
+    /**
+     * Test covering a case when binding camel route does not startup automatically
+     * @throws Exception If route startup or shutdown fails.
+     */
+    @Test
+    public void testBindingRouteAutoStartup() throws Exception {
+        InboundHandler handler = createInboundHandler("direct://autoStartup", false);
+        _camelContext.start();
+        Assert.assertEquals(false, _camelContext.getRouteDefinition(handler.getRouteId()).isAutoStartup(_camelContext));
         _camelContext.stop();
     }
 

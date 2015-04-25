@@ -64,23 +64,27 @@ public abstract class InboundHandlerTestBase {
         _configuration = mock(Configuration.class);
     }
 
+    protected InboundHandler<?> createInboundHandler(final String uri, final boolean autoStartup) {
+        return createInboundHandler(uri, null, autoStartup, null, null, null);
+    }
+
     protected InboundHandler<?> createInboundHandler(final String uri) {
-        return createInboundHandler(uri, null, null, null, null);
+        return createInboundHandler(uri, null, true, null, null, null);
     }
 
     protected InboundHandler<?> createInboundHandler(final String uri, final String name, OperationSelectorModel selectorModel) {
-        return createInboundHandler(uri, name, selectorModel, null, null);
+        return createInboundHandler(uri, name, true, selectorModel, null, null);
     }
 
     protected InboundHandler<?> createInboundHandler(final String uri, final String name, MessageComposerModel composerModel) {
-        return createInboundHandler(uri, name, null, composerModel, null);
+        return createInboundHandler(uri, name, true, null, composerModel, null);
     }
 
     protected InboundHandler<?> createInboundHandler(final String uri, final String name, ContextMapperModel mapperModel) {
-        return createInboundHandler(uri, name, null, null, mapperModel);
+        return createInboundHandler(uri, name, true, null, null, mapperModel);
     }
 
-    protected InboundHandler<?> createInboundHandler(final String uri, final String name, final OperationSelectorModel selectorModel,
+    protected InboundHandler<?> createInboundHandler(final String uri, final String name, final boolean autoStartup, final OperationSelectorModel selectorModel,
         final MessageComposerModel composerModel, final ContextMapperModel mapperModel) {
         V1BaseCamelBindingModel camelBindingModel = new V1BaseCamelBindingModel(_configuration, new Descriptor()) {
             @Override
@@ -102,6 +106,10 @@ public abstract class InboundHandlerTestBase {
             @Override
             public ContextMapperModel getContextMapper() {
                 return mapperModel;
+            }
+            @Override
+            public boolean isAutoStartup() {
+                return autoStartup;
             }
         };
         return new InboundHandler<V1BaseCamelBindingModel>(camelBindingModel, _camelContext, new QName("urn:foo", "dummyService"), null);
