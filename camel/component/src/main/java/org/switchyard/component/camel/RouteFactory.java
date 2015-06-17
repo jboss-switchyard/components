@@ -73,10 +73,17 @@ public final class RouteFactory {
      * @return list of route definitions
      */
     public static List<RouteDefinition> getRoutes(CamelComponentImplementationModel model) {
+        List<RouteDefinition> routes;
         if (model.getJavaClass() != null) {
-            return createRoute(model.getJavaClass(), model.getComponent().getTargetNamespace());
+            routes = createRoute(model.getJavaClass(), model.getComponent().getTargetNamespace());
+        } else {
+            routes = loadRoute(model.getXMLPath());
         }
-        return loadRoute(model.getXMLPath());
+        int i = 0;
+        for (RouteDefinition route : routes) {
+            route.setId(model.getComponent().getQName().toString().replace(':', '-') + "-" + ++i);
+        }
+        return routes;
     }
 
     /**
