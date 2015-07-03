@@ -248,7 +248,7 @@ public class InboundHandler extends BaseServiceHandler {
         }
 
         if ((soapMessage == null) || (soapMessage.getSOAPPart() == null)) {
-            return handleException(oneWay, 
+            return handleException(soapMessage, oneWay,
                      SOAPMessages.MESSAGES.noSuchOperation(_wsdlPort.getName().toString()));
         }
         if (LOGGER.isTraceEnabled()) {
@@ -260,7 +260,7 @@ public class InboundHandler extends BaseServiceHandler {
                 // Get the operation using the action
                 operation = _operationsMap.get(action);
                 if (operation == null) {
-                    return handleException(oneWay, 
+                    return handleException(soapMessage, oneWay,
                             SOAPMessages.MESSAGES.couldNotFindOperation(action)
                                 );
                 }
@@ -282,7 +282,7 @@ public class InboundHandler extends BaseServiceHandler {
         }
 
         if (operation == null) {
-            return handleException(oneWay,                     
+            return handleException(soapMessage, oneWay,
                     SOAPMessages.MESSAGES.operationNotAvailableTarget(firstBodyElement.toString(), _service.getName() + "'."));
         }
 
@@ -325,7 +325,7 @@ public class InboundHandler extends BaseServiceHandler {
             if (oneWay) {
                 exchange.send(message);
                 if (exchange.getState().equals(ExchangeState.FAULT)) {
-                    return composeResponse(exchange, msgContext, operation, true);
+                    return composeResponse(soapMessage, exchange, msgContext, operation, true);
                 } else {
                     return null;
                 }
@@ -334,7 +334,7 @@ public class InboundHandler extends BaseServiceHandler {
                 try {
                     exchange = inOutHandler.waitForOut(_waitTimeout);
                 } catch (DeliveryException e) {
-                    return handleException(oneWay, 
+                    return handleException(soapMessage, oneWay,
                             SOAPMessages.MESSAGES.timedOut(String.valueOf(_waitTimeout), 
                                     _service.getName().toString()));
                 }
@@ -345,18 +345,18 @@ public class InboundHandler extends BaseServiceHandler {
                 if (msgContext != null) {
                     msgContext.put(SOAPUtil.SWITCHYARD_CONTEXT, exchange.getContext());
                 }
-                return composeResponse(exchange, msgContext, operation, false);
+                return composeResponse(soapMessage, exchange, msgContext, operation, false);
             }
         } catch (SOAPException se) {
             if (msgContext != null) {
                 msgContext.put(MessageContext.HTTP_RESPONSE_CODE, SOAPUtil.DEFAULT_FAULT_RESONSE_CODE);
             }
-            return handleException(oneWay, se);
+            return handleException(soapMessage, oneWay, se);
         }
     }
 
-    private SOAPMessage composeResponse(Exchange exchange, MessageContext msgContext, Operation operation, Boolean oneWay) throws SOAPException {
-        SOAPBindingData bindingData = new SOAPBindingData(SOAPUtil.createMessage(_bindingId));
+    private SOAPMessage composeResponse(SOAPMessage soapRequest, Exchange exchange, MessageContext msgContext, Operation operation, Boolean oneWay) throws SOAPException {
+        SOAPBindingData bindingData = new SOAPBindingData(SOAPUtil.createMessage(_bindingId, soapRequest));
         SOAPMessage soapResponse;
         try {
             soapResponse = _messageComposer.decompose(exchange, bindingData).getSOAPMessage();
@@ -384,7 +384,7 @@ public class InboundHandler extends BaseServiceHandler {
             throw new SOAPFaultException(SOAPUtil.createFault(ex, _bindingId, WSDLUtil.getFaultQName(operation, ex.getClass().getSimpleName())));
         }
         if (exchange.getState() == ExchangeState.FAULT && soapResponse.getSOAPBody().getFault() == null) {
-            return handleException(oneWay, 
+            return handleException(soapResponse, oneWay,
                     SOAPMessages.MESSAGES.invalidResponseConstruction(_messageComposer.getClass().getName()));
         }
         
@@ -438,12 +438,12 @@ public class InboundHandler extends BaseServiceHandler {
         }
     }
 
-    private SOAPMessage handleException(Boolean oneWay, SOAPException se) {
+    private SOAPMessage handleException(SOAPMessage soapRequest, Boolean oneWay, SOAPException se) {
         if (oneWay) {
             LOGGER.error(se);
         } else {
             try {
-                return SOAPUtil.generateFault(se, _bindingId);
+                return SOAPUtil.generateFault(se, _bindingId, soapRequest);
             } catch (SOAPException e) {
                 LOGGER.error(e);
             }

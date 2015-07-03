@@ -360,10 +360,10 @@ public final class SOAPUtil {
      */
     public static SOAPFault addFault(SOAPMessage soapMessage) throws SOAPException {
         if (isSOAP12(soapMessage)) {
-            return soapMessage.getSOAPBody().addFault(SOAP12_FAULT_MESSAGE_TYPE, 
+            return soapMessage.getSOAPBody().addFault(SOAP12_RECEIVER_FAULT_TYPE,
                     SOAPMessages.MESSAGES.sendFailed());
         } else {
-            return soapMessage.getSOAPBody().addFault(SOAP11_FAULT_MESSAGE_TYPE, 
+            return soapMessage.getSOAPBody().addFault(SOAP11_SERVER_FAULT_TYPE,
                     SOAPMessages.MESSAGES.sendFailed());
         }
     }
@@ -381,6 +381,23 @@ public final class SOAPUtil {
             return generateSOAP12Fault(th);
         } else {
             return generateSOAP11Fault(th);
+        }
+    }
+
+    /**
+     * Generates a SOAP 1.1 or 1.2 Fault Message based on binding id, request SOAP message, and Exception passed.
+     *
+     * @param th The Exception
+     * @param bindingId SOAPBinding type
+     * @param request SOAPMessage to respond to
+     * @return The SOAP Message containing the Fault
+     * @throws SOAPException If the message could not be generated
+     */
+    public static SOAPMessage generateFault(final Throwable th, final String bindingId, final SOAPMessage request) throws SOAPException {
+        if (!isSOAP12(request)) {
+            return generateSOAP11Fault(th);
+        } else {
+            return generateFault(th, bindingId);
         }
     }
 
@@ -593,13 +610,24 @@ public final class SOAPUtil {
      * @throws SOAPException If the message could not be generated.
      */
     public static SOAPMessage createMessage(String bindingId) throws SOAPException {
-        SOAPMessage message = null;
-        if (bindingId.equals(SOAPBinding.SOAP12HTTP_BINDING) || bindingId.equals(SOAPBinding.SOAP12HTTP_MTOM_BINDING)) {
-            message = SOAP12_MESSAGE_FACTORY.createMessage();
+        return getFactory(bindingId).createMessage();
+    }
+
+    /**
+     * Creates a SOAP Message of version 1.1 or 1.2 based on binding id and request SOAP message.
+     * The binding Id can be one of javax.xml.ws.soap.SOAPBinding ids.
+     * 
+     * @param bindingId SOAPBinding type
+     * @param request SOAPMessage to respond to
+     * @return javax.xml.soap.SOAPMessage
+     * @throws SOAPException If the message could not be generated.
+     */
+    public static SOAPMessage createMessage(String bindingId, SOAPMessage request) throws SOAPException {
+        if (!isSOAP12(request)) {
+            return SOAP11_MESSAGE_FACTORY.createMessage();
         } else {
-            message = SOAP11_MESSAGE_FACTORY.createMessage();
+            return createMessage(bindingId);
         }
-        return message;
     }
 
     /**
