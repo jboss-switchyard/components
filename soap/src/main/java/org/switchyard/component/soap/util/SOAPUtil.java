@@ -360,10 +360,10 @@ public final class SOAPUtil {
      */
     public static SOAPFault addFault(SOAPMessage soapMessage) throws SOAPException {
         if (isSOAP12(soapMessage)) {
-            return soapMessage.getSOAPBody().addFault(SOAP12_FAULT_MESSAGE_TYPE, 
+            return soapMessage.getSOAPBody().addFault(SOAP12_RECEIVER_FAULT_TYPE,
                     SOAPMessages.MESSAGES.sendFailed());
         } else {
-            return soapMessage.getSOAPBody().addFault(SOAP11_FAULT_MESSAGE_TYPE, 
+            return soapMessage.getSOAPBody().addFault(SOAP11_SERVER_FAULT_TYPE,
                     SOAPMessages.MESSAGES.sendFailed());
         }
     }

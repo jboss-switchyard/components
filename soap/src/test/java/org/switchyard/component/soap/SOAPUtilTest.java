@@ -40,8 +40,22 @@ public class SOAPUtilTest {
     @Test
     public void testSOAP12EmptyFaultString() throws Exception {
         final SOAPFault soapFault = SOAPUtil.createFault(new Throwable(""), SOAPBinding.SOAP12HTTP_BINDING, null);
-        
+
         final SOAPMessage message = SOAPUtil.generateSOAP12Fault(new SOAPFaultException(soapFault));
         Assert.assertNotNull("SOAPMessage should have been returned", message);
+    }
+
+    @Test
+    public void testAddFault_soap11() throws Exception {
+        final SOAPFault soapFault = SOAPUtil.addFault(SOAPUtil.createMessage(SOAPBinding.SOAP11HTTP_BINDING));
+        Assert.assertNotNull("SOAPFault should have been returned", soapFault);
+        Assert.assertEquals(SOAPUtil.SOAP11_FAULT_MESSAGE_TYPE, soapFault.getElementQName());
+    }
+
+    @Test
+    public void testAddFault_soap12() throws Exception {
+        final SOAPFault soapFault = SOAPUtil.addFault(SOAPUtil.createMessage(SOAPBinding.SOAP12HTTP_BINDING));
+        Assert.assertNotNull("SOAPFault should have been returned", soapFault);
+        Assert.assertEquals(SOAPUtil.SOAP12_FAULT_MESSAGE_TYPE, soapFault.getElementQName());
     }
 }
