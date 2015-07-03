@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://www.w3.org/2003/05/soap-envelope" xmlns:ns2="urn:switchyard-component-soap:test-ws:1.0">
+    <SOAP-ENV:Header />
+    <SOAP-ENV:Body>
+        <ns2:sayHello>
+            <arg0>SwitchYard</arg0>
+        </ns2:sayHello>
+    </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
