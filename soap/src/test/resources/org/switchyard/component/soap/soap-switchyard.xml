@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<switchyard xmlns="urn:switchyard-config:switchyard:1.0" xmlns:sca="http://docs.oasis-open.org/ns/opencsa/sca/200912" xmlns:soap="urn:switchyard-component-soap:config:1.0" name="SOAPMessageTest" targetNamespace="urn:test:SOAPMessageTest:1.0">
+  <sca:composite name="SOAPMessageTest" targetNamespace="urn:test:SOAPMessageTest:1.0">
+    <sca:service name="HelloSOAPService" promote="Dummy/HelloSOAPService">
+      <soap:binding.soap name="soap11">
+        <soap:wsdl>HelloWebService.wsdl</soap:wsdl>
+        <soap:socketAddr>:18001</soap:socketAddr>
+        <soap:contextPath>soap11</soap:contextPath>
+      </soap:binding.soap>
+      <soap:binding.soap name="soap12">
+        <soap:wsdl>HelloWebService1.2.wsdl</soap:wsdl>
+        <soap:socketAddr>:18001</soap:socketAddr>
+        <soap:contextPath>soap12</soap:contextPath>
+      </soap:binding.soap>
+    </sca:service>
+    <sca:component name="Dummy">
+      <sca:implementation.java class="org.switchyard.component.soap.DummyBean"/>
+      <sca:service name="HelloSOAPService">
+        <sca:interface.wsdl interface="HelloWebService.wsdl#wsdl.porttype(HelloWebService)"/>
+      </sca:service>
+    </sca:component>
+  </sca:composite>
+  <domain>
+    <properties>
+      <property name="org.switchyard.handlers.messageTrace.enabled" value="true"/>
+    </properties>
+  </domain>
+</switchyard>

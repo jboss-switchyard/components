@@ -242,7 +242,7 @@ public class InboundHandler extends BaseServiceHandler {
         }
 
         if ((soapMessage == null) || (soapMessage.getSOAPPart() == null)) {
-            return handleException(oneWay, 
+            return handleException(soapMessage, oneWay,
                      SOAPMessages.MESSAGES.noSuchOperation(_wsdlPort.getName().toString()));
         }
         if (LOGGER.isTraceEnabled()) {
@@ -254,7 +254,7 @@ public class InboundHandler extends BaseServiceHandler {
                 // Get the operation using the action
                 operation = _operationsMap.get(action);
                 if (operation == null) {
-                    return handleException(oneWay, 
+                    return handleException(soapMessage, oneWay,
                             SOAPMessages.MESSAGES.couldNotFindOperation(action)
                                 );
                 }
@@ -276,7 +276,7 @@ public class InboundHandler extends BaseServiceHandler {
         }
 
         if (operation == null) {
-            return handleException(oneWay,                     
+            return handleException(soapMessage, oneWay,
                     SOAPMessages.MESSAGES.operationNotAvailableTarget(firstBodyElement.toString(), _service.getName() + "'."));
         }
 
@@ -318,7 +318,7 @@ public class InboundHandler extends BaseServiceHandler {
                 try {
                     exchange = inOutHandler.waitForOut(_waitTimeout);
                 } catch (DeliveryException e) {
-                    return handleException(oneWay, 
+                    return handleException(soapMessage, oneWay,
                             SOAPMessages.MESSAGES.timedOut(String.valueOf(_waitTimeout), 
                                     _service.getName().toString()));
                 }
@@ -328,7 +328,7 @@ public class InboundHandler extends BaseServiceHandler {
                 }
                 SOAPMessage soapResponse;
                 try {
-                    SOAPBindingData bindingData = new SOAPBindingData(SOAPUtil.createMessage(_bindingId));
+                    SOAPBindingData bindingData = new SOAPBindingData(SOAPUtil.createMessage(_bindingId, soapMessage));
                     soapResponse = _messageComposer.decompose(exchange, bindingData).getSOAPMessage();
                     if (msgContext != null) {
                         msgContext.put(BaseHandler.STATUS, bindingData.getStatus());
@@ -339,7 +339,7 @@ public class InboundHandler extends BaseServiceHandler {
                     throw new SwitchYardException(ex);
                 }
                 if (exchange.getState() == ExchangeState.FAULT && soapResponse.getSOAPBody().getFault() == null) {
-                    return handleException(oneWay, 
+                    return handleException(soapResponse, oneWay,
                             SOAPMessages.MESSAGES.invalidResponseConstruction(_messageComposer.getClass().getName()));
                 }
                 
@@ -352,7 +352,7 @@ public class InboundHandler extends BaseServiceHandler {
             if (msgContext != null) {
                 msgContext.put(BaseHandler.STATUS, DEFAULT_FAULT_RESONSE_CODE);
             }
-            return handleException(oneWay, se);
+            return handleException(soapMessage, oneWay, se);
         }
     }
 
@@ -394,12 +394,12 @@ public class InboundHandler extends BaseServiceHandler {
         }
     }
 
-    private SOAPMessage handleException(Boolean oneWay, SOAPException se) {
+    private SOAPMessage handleException(SOAPMessage soapRequest, Boolean oneWay, SOAPException se) {
         if (oneWay) {
             LOGGER.error(se);
         } else {
             try {
-                return SOAPUtil.generateFault(se, _bindingId);
+                return SOAPUtil.generateFault(se, _bindingId, soapRequest);
             } catch (SOAPException e) {
                 LOGGER.error(e);
             }
