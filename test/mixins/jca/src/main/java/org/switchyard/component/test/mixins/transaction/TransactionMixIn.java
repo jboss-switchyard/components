@@ -52,9 +52,9 @@ public class TransactionMixIn extends AbstractTestMixIn
     @Override
     public void initialize() {
         if (getTestKit() != null) {
-            Iterator<TestMixIn> dependencies = getTestKit().getOptionalDependencies(this).iterator();
-            while (_jtaEnvironmentBean == null && dependencies.hasNext()) {
-                TestMixIn testMixIn = dependencies.next();
+            Iterator<TestMixIn> mixins = getTestKit().getMixIns().iterator();
+            while (_jtaEnvironmentBean == null && mixins.hasNext()) {
+                TestMixIn testMixIn = mixins.next();
                 if (testMixIn instanceof TransactionMixInParticipant) {
                     try {
                         _logger.debug("Trying to locate JTA environment using " + testMixIn);
@@ -115,6 +115,9 @@ public class TransactionMixIn extends AbstractTestMixIn
 
     @Override
     public void participate(Deployment deployment) throws Exception {
+        if (_jtaEnvironmentBean == null) {
+            initialize();
+        }
         deployment.getServices().add(org.jboss.weld.transaction.spi.TransactionServices.class,
             new LocalArjunaTransactionServices(_jtaEnvironmentBean));
     }
