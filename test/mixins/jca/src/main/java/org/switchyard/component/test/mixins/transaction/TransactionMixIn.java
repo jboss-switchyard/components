@@ -115,6 +115,12 @@ public class TransactionMixIn extends AbstractTestMixIn
 
     @Override
     public void participate(Deployment deployment) throws Exception {
+        // TODO Refactor mixins init procedure to respect participant dependency
+        // https://issues.jboss.org/browse/SWITCHYARD-2743
+        if (_jtaEnvironmentBean == null) {
+            initialize();
+        }
+
         deployment.getServices().add(org.jboss.weld.transaction.spi.TransactionServices.class,
             new LocalArjunaTransactionServices(_jtaEnvironmentBean));
     }
