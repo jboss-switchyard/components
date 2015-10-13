@@ -13,9 +13,21 @@
  */
 package org.switchyard.component.bean.inject;
 
-public interface InjectService {
+import javax.inject.Inject;
 
-    public String doSomething(String in);
+import org.switchyard.Context;
+import org.switchyard.component.bean.Service;
 
-    public String doSomethingAfterAnotherBeanInvocation(String in);
+@Service(InjectedService.class)
+public class InjectedServiceImpl implements InjectedService {
+
+    @Inject
+    private Context context;
+
+    @Override
+    public String doSomething(String in) {
+        context.setProperty("someProp", "set by InjectedServiceImpl");
+        return in + " - modified by InjectedServiceImpl";
+    }
+
 }

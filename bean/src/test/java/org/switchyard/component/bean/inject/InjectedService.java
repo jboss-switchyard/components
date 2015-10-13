@@ -13,9 +13,8 @@
  */
 package org.switchyard.component.bean.inject;
 
-public interface InjectService {
+public interface InjectedService {
 
     public String doSomething(String in);
 
-    public String doSomethingAfterAnotherBeanInvocation(String in);
 }

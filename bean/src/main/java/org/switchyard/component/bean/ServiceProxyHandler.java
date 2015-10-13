@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.jboss.logging.Logger;
+import org.switchyard.Context;
 import org.switchyard.Exchange;
 import org.switchyard.ExchangePattern;
 import org.switchyard.ExchangePhase;
@@ -156,15 +157,15 @@ public class ServiceProxyHandler extends BaseServiceHandler implements ServiceHa
                 }
 
                 Object responseObject;
-                ContextProxy.setContext(exchange.getContext());
-                MessageProxy.setMessage(exchange.getMessage());
-                ExchangeProxy.setExchange(exchange);
+                Context origContext = ContextProxy.setContext(exchange.getContext());
+                Message origMessage = MessageProxy.setMessage(exchange.getMessage());
+                Exchange origExchange = ExchangeProxy.setExchange(exchange);
                 try {
                     responseObject = invocation.getMethod().invoke(_serviceBean, invocation.getArgs());
                 } finally {
-                    ContextProxy.setContext(null);
-                    MessageProxy.setMessage(null);
-                    ExchangeProxy.setExchange(null);
+                    ContextProxy.setContext(origContext);
+                    MessageProxy.setMessage(origMessage);
+                    ExchangeProxy.setExchange(origExchange);
                 }
                 
                 if (exchangePattern == ExchangePattern.IN_OUT 

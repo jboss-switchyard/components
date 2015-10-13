@@ -19,8 +19,10 @@ import javax.activation.DataSource;
 import javax.inject.Inject;
 
 import org.switchyard.Context;
+import org.switchyard.Exchange;
 import org.switchyard.Message;
 import org.switchyard.common.io.pull.StringPuller;
+import org.switchyard.component.bean.Reference;
 import org.switchyard.component.bean.Service;
 
 @Service(InjectService.class)
@@ -31,6 +33,13 @@ public class InjectServiceImpl implements InjectService {
 
     @Inject
     private Message message;
+    
+    @Inject
+    private Exchange exchange;
+    
+    @Inject
+    @Reference
+    private InjectedService service;
 
     @Override
     public String doSomething(String in) {
@@ -49,4 +58,22 @@ public class InjectServiceImpl implements InjectService {
         return propertyMatch + ", " + contentMatch + ", " + attachMatch;
     }
 
+    @Override
+    public String doSomethingAfterAnotherBeanInvocation(String in) {
+        String propC = (String)context.getProperty("someProp").getValue();
+        String propM = (String)message.getContext().getProperty("someProp").getValue();
+        String propE = (String)exchange.getContext().getProperty("someProp").getValue();
+        boolean propertyMatch = propC.equals(propM) && propC.equals(propE);
+        boolean contentMatch = in.equals(message.getContent(String.class));
+
+        service.doSomething(in);
+        propC = (String)context.getProperty("someProp").getValue();
+        propM = (String)message.getContext().getProperty("someProp").getValue();
+        propE = (String)exchange.getContext().getProperty("someProp").getValue();
+        boolean propertyMatchAfter = propC.equals(propM) && propC.equals(propE);
+        boolean contentMatchAfter = in.equals(message.getContent(String.class));
+
+        return propertyMatch + ", " + contentMatch + ", " + propertyMatchAfter + ", " + contentMatchAfter;
+        
+    }
 }

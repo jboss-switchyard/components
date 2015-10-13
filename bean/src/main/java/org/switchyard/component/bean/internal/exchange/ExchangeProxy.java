@@ -52,13 +52,16 @@ public class ExchangeProxy implements Exchange {
     /**
      * Sets the {@link Exchange} for the current thread.
      * @param exchange the exchange
+     * @return the exchange previously associated with current thread
      */
-    public static void setExchange(Exchange exchange) {
+    public static Exchange setExchange(Exchange exchange) {
+        Exchange orig = EXCHANGE.get();
         if (exchange != null) {
             EXCHANGE.set(exchange);
         } else {
             EXCHANGE.remove();
         }
+        return orig;
     }
 
     @Override

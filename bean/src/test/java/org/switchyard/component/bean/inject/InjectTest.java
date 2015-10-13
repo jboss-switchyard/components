@@ -51,4 +51,17 @@ public class InjectTest {
         Assert.assertEquals("true, true, true", outExchange.getMessage().getContent());
     }
 
+    @Test
+    public void testInjectAfterAnotherBeanInvocation() {
+        Invoker invoker = _testKit.newInvoker("InjectService.doSomethingAfterAnotherBeanInvocation");
+        SynchronousInOutHandler handler = new SynchronousInOutHandler();
+        Exchange exchange = invoker.createExchange(handler);
+        Message message = exchange.createMessage();
+        Context context = exchange.getContext(message);
+        context.setProperty("someProp", "somePropVal");
+        message.setContent("blah");
+        exchange.send(message);
+        Exchange outExchange = handler.waitForOut();
+        Assert.assertEquals("true, true, true, true", outExchange.getMessage().getContent());
+    }
 }

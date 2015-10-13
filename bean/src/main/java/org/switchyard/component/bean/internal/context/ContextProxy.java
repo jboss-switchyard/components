@@ -161,13 +161,16 @@ public class ContextProxy implements Context {
     /**
      * Sets the {@link Context} for the current thread.
      * @param context the context
+     * @return the context previously associated with current thread
      */
-    public static void setContext(Context context) {
+    public static Context setContext(Context context) {
+        Context orig = CONTEXT.get();
         if (context != null) {
             CONTEXT.set(context);
         } else {
             CONTEXT.remove();
         }
+        return orig;
     }
 
 }
