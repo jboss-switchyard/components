@@ -325,7 +325,7 @@ public class InboundHandler extends BaseServiceHandler {
             if (oneWay) {
                 exchange.send(message);
                 if (exchange.getState().equals(ExchangeState.FAULT)) {
-                    return composeResponse(exchange, msgContext, operation, true);
+                    return composeResponse(soapMessage, exchange, msgContext, operation, true);
                 } else {
                     return null;
                 }
@@ -346,7 +346,7 @@ public class InboundHandler extends BaseServiceHandler {
                     msgContext.put(SOAPUtil.SWITCHYARD_CONTEXT, exchange.getContext());
                 }
 
-                return composeResponse(exchange, msgContext, operation, false);
+                return composeResponse(soapMessage, exchange, msgContext, operation, false);
             }
         } catch (SOAPException se) {
             if (msgContext != null) {
@@ -356,8 +356,8 @@ public class InboundHandler extends BaseServiceHandler {
         }
     }
 
-    private SOAPMessage composeResponse(Exchange exchange, MessageContext msgContext, Operation operation, Boolean oneWay) throws SOAPException {
-        SOAPBindingData bindingData = new SOAPBindingData(SOAPUtil.createMessage(_bindingId));
+    private SOAPMessage composeResponse(SOAPMessage request, Exchange exchange, MessageContext msgContext, Operation operation, Boolean oneWay) throws SOAPException {
+        SOAPBindingData bindingData = new SOAPBindingData(SOAPUtil.createMessage(_bindingId, request));
         SOAPMessage soapResponse;
         try {
             soapResponse = _messageComposer.decompose(exchange, bindingData).getSOAPMessage();
